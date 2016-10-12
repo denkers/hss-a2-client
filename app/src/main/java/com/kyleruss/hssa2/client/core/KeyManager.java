@@ -22,6 +22,7 @@ public class KeyManager
     private static KeyManager instance;
     private KeyPair clientKeyPair;
     private Map<String, SecretKeySpec> sessionKeys;
+    private Map<String, PublicKey> publicKeys;
 
     private KeyManager() {}
 
@@ -71,6 +72,26 @@ public class KeyManager
     public void addSessionKey(String userID, SecretKeySpec key)
     {
         sessionKeys.put(userID, key);
+    }
+
+    public void removeSessionKey(String userID)
+    {
+        sessionKeys.remove(userID);
+    }
+
+    public Map<String, PublicKey> getPublicKeys()
+    {
+        return publicKeys;
+    }
+
+    public PublicKey getPublicKey(String userID)
+    {
+        return publicKeys.get(userID);
+    }
+
+    public void removePublicKey(String userID)
+    {
+        publicKeys.remove(userID);
     }
 
     public static KeyManager getInstance()
