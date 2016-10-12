@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/HSSA2Client.iml" filepath="$PROJECT_DIR$/HSSA2Client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/HSS-A2-Client.iml" filepath="$PROJECT_DIR$/HSS-A2-Client.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
