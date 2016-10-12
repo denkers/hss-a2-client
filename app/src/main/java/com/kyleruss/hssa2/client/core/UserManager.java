@@ -14,6 +14,22 @@ import java.util.Set;
 public class UserManager
 {
     private Map<String, User> onlineUsers;
+    private User activeUser;
+
+    public User getActiveUser()
+    {
+        return activeUser;
+    }
+
+    public void setActiveUser(User activeUser)
+    {
+        this.activeUser =   activeUser;
+    }
+
+    public boolean hasActiveUser()
+    {
+        return activeUser   != null;
+    }
 
     public Collection<String> getPhoneIDList()
     {
