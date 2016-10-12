@@ -8,11 +8,15 @@ package com.kyleruss.hssa2.client.core;
 
 import android.util.Log;
 
+import com.kyleruss.hssa2.commons.CryptoUtils;
+
+import java.io.UnsupportedEncodingException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Map;
 
 import javax.crypto.spec.SecretKeySpec;
@@ -23,6 +27,7 @@ public class KeyManager
     private KeyPair clientKeyPair;
     private Map<String, SecretKeySpec> sessionKeys;
     private Map<String, PublicKey> publicKeys;
+    private PublicKey serverPublicKey;
 
     private KeyManager() {}
 
@@ -57,6 +62,22 @@ public class KeyManager
     {
         if(clientKeyPair == null) return null;
         else return clientKeyPair.getPublic();
+    }
+
+    public PublicKey getServerPublicKey()
+    {
+        return serverPublicKey;
+    }
+
+    public void setServerPublicKey(PublicKey serverPublicKey)
+    {
+        this.serverPublicKey    =   serverPublicKey;
+    }
+
+    public void setServerPublicKey(String publicKeyStr)
+    throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeySpecException
+    {
+        serverPublicKey =   (PublicKey) CryptoUtils.stringToAsymKey(publicKeyStr, false, true);
     }
 
     public Map<String, SecretKeySpec> getSessionKeys()
