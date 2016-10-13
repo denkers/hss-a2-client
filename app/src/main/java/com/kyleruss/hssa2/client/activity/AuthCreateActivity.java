@@ -19,6 +19,7 @@ import com.kyleruss.hssa2.client.communication.HTTPAsync;
 import com.kyleruss.hssa2.client.communication.ServiceRequest;
 import com.kyleruss.hssa2.client.core.ClientConfig;
 import com.kyleruss.hssa2.client.core.KeyManager;
+import com.kyleruss.hssa2.client.core.User;
 import com.kyleruss.hssa2.commons.CryptoCommons;
 import com.kyleruss.hssa2.commons.EncryptedSession;
 import com.kyleruss.hssa2.commons.Password;
@@ -28,6 +29,8 @@ import java.net.URLEncoder;
 
 public class AuthCreateActivity extends Activity
 {
+    private User registerUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -57,6 +60,11 @@ public class AuthCreateActivity extends Activity
         {
             Log.d("PASSWORD_SEND_FAIL", e.getMessage());
         }
+    }
+
+    private void createTempUser()
+    {
+        registerUser    =   new User();
     }
 
     private class PasswordSendTask extends HTTPAsync

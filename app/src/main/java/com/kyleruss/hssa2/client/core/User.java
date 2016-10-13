@@ -11,6 +11,23 @@ public class User
     private String name;
     private String profileImage;
     private String phoneID;
+    private String email;
+
+    public User()
+    {
+        name = profileImage = phoneID = email = "";
+    }
+
+    public User(String phoneID)
+    {
+        this.phoneID    =   phoneID;
+    }
+
+    public User(String name, String phoneID)
+    {
+        this.name           =   name;
+        this.phoneID        =   phoneID;
+    }
 
     public String getProfileImage()
     {

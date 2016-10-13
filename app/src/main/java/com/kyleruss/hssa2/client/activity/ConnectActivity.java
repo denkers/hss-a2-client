@@ -64,8 +64,8 @@ public class ConnectActivity extends Activity
         {
             try
             {
-                JsonObject responseObj = parseJsonInput(response);
-                String keyStr = responseObj.get("serverPublicKey").getAsString();
+                JsonObject responseObj =    parseJsonInput(response);
+                String keyStr           =   responseObj.get("serverPublicKey").getAsString();
                 KeyManager.getInstance().setServerPublicKey(keyStr);
                 startAuthCreateActivity();
             }
