@@ -64,19 +64,6 @@ public abstract class HTTPAsync extends AsyncTask<ServiceRequest, Void, String>
         return serviceResponse;
     }
 
-    public static JSONObject getJSONResult(String response)
-    {
-        try
-        {
-            return new JSONObject(response);
-        }
-
-        catch(JSONException e)
-        {
-            e.printStackTrace();
-            return null;
-        }
-    }
 
     public static void showServicingSpinner(ImageView v)
     {
