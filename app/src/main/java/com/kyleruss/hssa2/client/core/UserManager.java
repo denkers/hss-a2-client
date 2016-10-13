@@ -13,8 +13,11 @@ import java.util.Set;
 
 public class UserManager
 {
+    private static UserManager instance;
     private Map<String, User> onlineUsers;
     private User activeUser;
+
+    private UserManager() {}
 
     public User getActiveUser()
     {
@@ -64,5 +67,11 @@ public class UserManager
     public int getOnlineUserCount()
     {
         return onlineUsers.size();
+    }
+
+    public static UserManager getInstance()
+    {
+        if(instance == null) instance = new UserManager();
+        return instance;
     }
 }

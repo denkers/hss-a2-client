@@ -11,7 +11,10 @@ import java.util.Map;
 
 public class RequestManager
 {
+    private static RequestManager instance;
     private Map<String, String> requests;
+
+    private RequestManager() {}
 
     public Map<String, String> getRequests()
     {
@@ -49,5 +52,11 @@ public class RequestManager
 
         String storedNonce  =   requests.get(requestID);
         return storedNonce.equals(nonce);
+    }
+
+    public static RequestManager getInstance()
+    {
+        if(instance == null) instance   =   new RequestManager();
+        return instance;
     }
 }
