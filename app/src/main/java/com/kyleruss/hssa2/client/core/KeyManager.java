@@ -35,6 +35,7 @@ public class KeyManager
         try
         {
             KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
+            keyGen.initialize(1024);
             clientKeyPair = keyGen.generateKeyPair();
         }
 
