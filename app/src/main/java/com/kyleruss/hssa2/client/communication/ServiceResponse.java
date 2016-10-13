@@ -67,7 +67,7 @@ public class ServiceResponse
         this.data   =   data;
     }
 
-   /* public void showToastResponse(Activity activity)
+    public void showToastResponse(Activity activity)
     {
         LayoutInflater inflater =   activity.getLayoutInflater();
         View layout             =   inflater.inflate(R.layout.toast_layout, (ViewGroup) activity.findViewById(R.id.stoast_layout));
@@ -82,5 +82,5 @@ public class ServiceResponse
         toast.setDuration(Toast.LENGTH_LONG);
         toast.setView(layout);
         toast.show();
-    } */
+    }
 }

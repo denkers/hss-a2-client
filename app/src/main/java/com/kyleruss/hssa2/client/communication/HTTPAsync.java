@@ -68,7 +68,7 @@ public abstract class HTTPAsync extends AsyncTask<ServiceRequest, Void, String>
     public static void showServicingSpinner(ImageView v)
     {
         v.setImageResource(android.R.color.transparent);
-       // v.setBackgroundResource(R.drawable.spinner_animation);
+        v.setBackgroundResource(R.drawable.spinner_animation);
         AnimationDrawable animation =   (AnimationDrawable) v.getBackground();
         animation.start();
     }
