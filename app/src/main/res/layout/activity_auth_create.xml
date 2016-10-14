@@ -46,7 +46,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.3"
-            android:hint="3-16 characters"
+            android:hint="Enter your display name"
             android:inputType="text"
             android:id="@+id/regUsernameField"
             android:textSize="14sp"/>
