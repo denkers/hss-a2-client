@@ -45,6 +45,11 @@ public class ServiceRequest
         return url;
     }
 
+    public void setURL(String url)
+    {
+        this.url    =   url;
+    }
+
     public Map<String, Object> getParams()
     {
         return params;

@@ -7,6 +7,7 @@
 package com.kyleruss.hssa2.client.communication;
 
 import android.util.Base64;
+import android.util.Log;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -14,6 +15,7 @@ import com.kyleruss.hssa2.commons.CryptoCommons;
 import com.kyleruss.hssa2.commons.EncryptedSession;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
@@ -26,11 +28,20 @@ import javax.crypto.NoSuchPaddingException;
 public class CommUtils
 {
     public static ServiceRequest prepareEncryptedSessionRequest(EncryptedSession session)
-    throws BadPaddingException, IllegalBlockSizeException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException
+    throws BadPaddingException, IllegalBlockSizeException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, UnsupportedEncodingException
     {
         session.initCipher(Cipher.ENCRYPT_MODE);
-        String data =   Base64.encodeToString(session.processData(), Base64.DEFAULT);
-        String key  =   Base64.encodeToString(session.encryptKey(), Base64.DEFAULT);
+        String data =   URLEncoder.encode(Base64.encodeToString(session.processData(), Base64.NO_WRAP), "UTF-8");
+      //  String AESKEY   =   Base64.encodeToString(session.getAESKey(), Base64.NO_WRAP);
+       // Log.d("AES_KEY", AESKEY);
+     //   String encodedKey   =   Base64.encodeToString(session.encryptKey(), Base64.NO_WRAP);
+      //  Log.d("COMMUTILS", encodedKey);
+        byte[] encryptedKey =   session.encryptKey();
+        Log.d("enc_key_len", "" + encryptedKey.length);
+        String encodedKey   =   Base64.encodeToString(encryptedKey, Base64.NO_WRAP);
+        Log.d("ENCODED_KEY", encodedKey);
+        String key  =   URLEncoder.encode(encodedKey, "UTF-8");//URLEncoder.encode(Base64.encodeToString(session.encryptKey(), Base64.NO_WRAP), "utf-8");
+        //Log.d("COMMUTILS_URL", key);
 
         ServiceRequest serviceRequest   =   new ServiceRequest();
         serviceRequest.addParam("key", key);

@@ -1,0 +1,70 @@
+//======================================
+//  Kyle Russell
+//  AUT University 2016
+//  Highly Secured Systems A2
+//======================================
+
+package com.kyleruss.hssa2.client.activity;
+
+import android.app.Activity;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.util.Base64;
+import android.util.Log;
+
+import com.google.gson.JsonObject;
+import com.kyleruss.hssa2.client.R;
+import com.kyleruss.hssa2.client.communication.CommUtils;
+import com.kyleruss.hssa2.client.communication.HTTPAsync;
+import com.kyleruss.hssa2.client.communication.ServiceRequest;
+import com.kyleruss.hssa2.client.core.ClientConfig;
+import com.kyleruss.hssa2.client.core.KeyManager;
+import com.kyleruss.hssa2.commons.CryptoCommons;
+import com.kyleruss.hssa2.commons.EncryptedSession;
+import com.kyleruss.hssa2.commons.Password;
+import com.kyleruss.hssa2.commons.RequestPaths;
+
+import java.net.URLEncoder;
+
+public class AuthCreateActivity extends Activity
+{
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_auth_create);
+        sendPasswordAuthEmail();
+    }
+
+    private void sendPasswordAuthEmail()
+    {
+        try
+        {
+            String email = "kyleruss2030@gmail.com";
+            JsonObject requestObj = new JsonObject();
+            requestObj.addProperty("email", email);
+
+            EncryptedSession encSession =   new EncryptedSession(requestObj.toString().getBytes("UTF-8"), KeyManager.getInstance().getServerPublicKey());
+            ServiceRequest request      =   CommUtils.prepareEncryptedSessionRequest(encSession);
+            request.setURL(ClientConfig.CONN_URL + RequestPaths.PASS_REQ);
+            request.setGet(false);
+
+            PasswordSendTask task   =   new PasswordSendTask();
+            task.execute(request);
+        }
+
+        catch(Exception e)
+        {
+            Log.d("PASSWORD_SEND_FAIL", e.getMessage());
+        }
+    }
+
+    private class PasswordSendTask extends HTTPAsync
+    {
+        @Override
+        protected void onPostExecute(String response)
+        {
+            Log.d("PASSWORD_SEND_RESP", response);
+        }
+    }
+}

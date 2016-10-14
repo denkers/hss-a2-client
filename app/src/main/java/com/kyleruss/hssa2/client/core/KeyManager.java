@@ -39,7 +39,10 @@ public class KeyManager
     private Map<String, PublicKey> publicKeys;
     private PublicKey serverPublicKey;
 
-    private KeyManager() {}
+    private KeyManager()
+    {
+        generateClientKeyPair();
+    }
 
     public KeyPair getClientKeyPair()
     {
@@ -131,6 +134,7 @@ public class KeyManager
     {
         byte[] keyBytes =   Base64.decode(publicKeyStr.getBytes("UTF-8"), Base64.DEFAULT);
         serverPublicKey =   (PublicKey) CryptoUtils.stringToAsymKey(keyBytes, true);
+        Log.d("SERVER_PUBLIC_KEY", Base64.encodeToString(serverPublicKey.getEncoded(), Base64.NO_WRAP));
     }
 
     public Map<String, SecretKeySpec> getSessionKeys()
