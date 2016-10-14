@@ -10,4 +10,115 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.kyleruss.hssa2.client.activity.AuthCreateActivity">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Create your account"
+        android:id="@+id/registerTitle"
+        android:layout_marginTop="20dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:drawableLeft="@drawable/usersicon"
+        android:drawablePadding="10dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/registerTitle"
+        android:orientation="horizontal"
+        android:id="@+id/usernameFieldLayout"
+        android:layout_marginTop="30dp"
+        android:weightSum="2">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.7"
+            android:text="Name"
+            android:id="@+id/usernameDesc"
+            android:focusableInTouchMode="false"
+            android:drawableLeft="@drawable/user"
+            android:drawablePadding="5dp"/>
+
+        <EditText
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.3"
+            android:hint="3-16 characters"
+            android:inputType="text"
+            android:id="@+id/regUsernameField"
+            android:textSize="14sp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/usernameFieldLayout"
+        android:orientation="horizontal"
+        android:id="@+id/emailFieldLayout"
+        android:layout_marginTop="10dp"
+        android:weightSum="2">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.7"
+            android:text="Email"
+            android:id="@+id/emailDesc"
+            android:drawableLeft="@drawable/emailicon"
+            android:drawablePadding="5dp"/>
+
+        <EditText
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.3"
+            android:hint="Enter a valid email"
+            android:inputType="text"
+            android:fontFamily="sans-serif"
+            android:id="@+id/regEmailField"
+            android:textSize="14sp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/emailFieldLayout"
+        android:orientation="horizontal"
+        android:id="@+id/confirmPasswordFieldLayout"
+        android:layout_marginTop="10dp"
+        android:weightSum="2">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.7"
+            android:text="Confirm"
+            android:id="@+id/rePasswordDesc"
+            android:drawableLeft="@drawable/tick"
+            android:drawablePadding="5dp"/>
+
+        <EditText
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.3"
+            android:hint="Re-enter your email"
+            android:inputType="textPassword"
+            android:fontFamily="sans-serif"
+            android:id="@+id/regRePasswordField"
+            android:textSize="14sp"/>
+    </LinearLayout>
+
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/register_image"
+        android:id="@+id/registerBtn"
+        android:layout_marginTop="48dp"
+        android:layout_below="@+id/confirmPasswordFieldLayout"
+        android:layout_centerHorizontal="true" />
+
+
 </RelativeLayout>
