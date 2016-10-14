@@ -6,6 +6,9 @@
 
 package com.kyleruss.hssa2.client.core;
 
+import com.kyleruss.hssa2.commons.CryptoUtils;
+
+import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.Map;
 
@@ -39,6 +42,17 @@ public class RequestManager
     public Collection<String> getRequestIDList()
     {
         return requests.keySet();
+    }
+
+    public Map.Entry<String, String> generateRequest()
+    {
+        String requestID;
+        do requestID    =   CryptoUtils.generateRandomString(4, CryptoUtils.ALPHA_NUMERIC);
+        while(hasRequest(requestID));
+
+        String nonce    =   CryptoUtils.generateRandomString(6, CryptoUtils.ALPHA_NUMERIC);
+        requests.put(requestID, nonce);
+        return new AbstractMap.SimpleEntry<>(requestID, nonce);
     }
 
     public boolean hasRequest(String requestID)

@@ -39,29 +39,26 @@ public class KeyManager
     private Map<String, PublicKey> publicKeys;
     private PublicKey serverPublicKey;
 
-    private KeyManager()
-    {
-        generateClientKeyPair();
-    }
+    private KeyManager() {}
 
     public KeyPair getClientKeyPair()
     {
         return clientKeyPair;
     }
 
-    public void generateClientKeyPair()
+    public KeyPair generateClientKeyPair()
     {
         try
         {
             KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
             keyGen.initialize(1024);
-            clientKeyPair = keyGen.generateKeyPair();
+            return keyGen.generateKeyPair();
         }
 
         catch(NoSuchAlgorithmException e)
         {
-            clientKeyPair   =   null;
             Log.e("KeyManager", e.getMessage());
+            return null;
         }
     }
 
@@ -170,15 +167,6 @@ public class KeyManager
     public void removePublicKey(String userID)
     {
         publicKeys.remove(userID);
-    }
-
-    public static Key stringToAsymKey(String keyValue, boolean decode, boolean publicKey)
-            throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeySpecException
-    {
-        byte[] keyBytes             =   decode? Base64.decode(keyValue.getBytes("UTF-8"), Base64.DEFAULT) : keyValue.getBytes("UTF-8");
-        KeySpec keySpec             =   publicKey? new X509EncodedKeySpec(keyBytes) : new PKCS8EncodedKeySpec(keyBytes);
-        KeyFactory keyFactory       =   KeyFactory.getInstance("RSA");
-        return publicKey? keyFactory.generatePublic(keySpec) : keyFactory.generatePrivate(keySpec);
     }
 
     public static KeyManager getInstance()
