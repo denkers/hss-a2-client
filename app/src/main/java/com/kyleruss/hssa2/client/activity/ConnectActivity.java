@@ -47,8 +47,8 @@ public class ConnectActivity extends Activity
     {
         String url              =   ClientConfig.CONN_URL + RequestPaths.SERV_PUBLIC_GET_REQ;
         ServiceRequest request  =   new ServiceRequest(url, true);
-        ConnectTask servicer    =   new ConnectTask();
-        servicer.execute(request);
+        ConnectTask task        =   new ConnectTask();
+        task.execute(request);
     }
 
     private void startAuthCreateActivity()
@@ -64,10 +64,10 @@ public class ConnectActivity extends Activity
         {
             try
             {
-                JsonObject responseObj =    parseJsonInput(response);
+                JsonObject responseObj  =    parseJsonInput(response);
                 String keyStr           =   responseObj.get("serverPublicKey").getAsString();
                 KeyManager.getInstance().setServerPublicKey(keyStr);
-                startAuthCreateActivity();
+              //  startAuthCreateActivity();
             }
 
             catch(Exception e)

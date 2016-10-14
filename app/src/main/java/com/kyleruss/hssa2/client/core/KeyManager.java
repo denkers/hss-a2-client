@@ -27,6 +27,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.crypto.spec.SecretKeySpec;
@@ -39,11 +40,20 @@ public class KeyManager
     private Map<String, PublicKey> publicKeys;
     private PublicKey serverPublicKey;
 
-    private KeyManager() {}
+    private KeyManager()
+    {
+        sessionKeys =   new HashMap<>();
+        publicKeys  =   new HashMap<>();
+    }
 
     public KeyPair getClientKeyPair()
     {
         return clientKeyPair;
+    }
+
+    public void setClientKeyPair(KeyPair clientKeyPair)
+    {
+        this.clientKeyPair  =   clientKeyPair;
     }
 
     public KeyPair generateClientKeyPair()

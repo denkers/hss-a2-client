@@ -10,6 +10,7 @@ import com.kyleruss.hssa2.commons.CryptoUtils;
 
 import java.util.AbstractMap;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 public class RequestManager
@@ -17,7 +18,10 @@ public class RequestManager
     private static RequestManager instance;
     private Map<String, String> requests;
 
-    private RequestManager() {}
+    private RequestManager()
+    {
+        requests    =   new HashMap<>();
+    }
 
     public Map<String, String> getRequests()
     {
@@ -58,6 +62,15 @@ public class RequestManager
     public boolean hasRequest(String requestID)
     {
         return requests.containsKey(requestID);
+    }
+
+    public boolean verifyAndDestroy(String requestID, String nonce)
+    {
+        if(!hasRequest(requestID)) return false;
+        boolean result  =   verifyNonce(requestID, nonce);
+        removeRequest(requestID);
+
+        return result;
     }
 
     public boolean verifyNonce(String requestID, String nonce)

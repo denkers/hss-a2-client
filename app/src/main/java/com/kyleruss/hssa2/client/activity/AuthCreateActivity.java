@@ -40,7 +40,9 @@ public class AuthCreateActivity extends Activity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth_create);
-        sendPasswordAuthEmail();
+        //sendPasswordAuthEmail();
+        createTempUser();
+        sendRegisterPackage();
     }
 
     private void sendPasswordAuthEmail()
@@ -71,19 +73,27 @@ public class AuthCreateActivity extends Activity
         try
         {
             String password = "Y2TLKT7T";
+            //-------------------------------------------------------------------------------
+            //Generate request ID, nonce and salts
+            //-------------------------------------------------------------------------------
             Map.Entry<String, String> requestEntry = RequestManager.getInstance().generateRequest();
-            String requestID = requestEntry.getKey();
-            String nonce = requestEntry.getValue();
-            String salt = registerUser.getPhoneID().substring(0, 4) + registerUser.getEmail().substring(0, 4);
+            String requestID    =   requestEntry.getKey();
+            String nonce        =   requestEntry.getValue();
+            String salt         =   registerUser.getPhoneID().substring(0, 4) + registerUser.getEmail().substring(0, 4);
+
+            //MD5 hash Salt & Pass for required key length
+            byte[] hashedSalt   =   CryptoCommons.generateHash(salt.getBytes("UTF-8"));
+            byte[] hashedPass   =   CryptoCommons.generateHash(password.getBytes("UTF-8"));
+            //-------------------------------------------------------------------------------
 
             JsonObject userDataObj = CommUtils.prepareAuthenticatedRequest(requestID, nonce);
-            currentKeyPair = KeyManager.getInstance().generateClientKeyPair();
-            String publicKey = Base64.encodeToString(currentKeyPair.getPublic().getEncoded(), Base64.NO_WRAP);
+            currentKeyPair      =   KeyManager.getInstance().generateClientKeyPair();
+            String publicKey    =   Base64.encodeToString(currentKeyPair.getPublic().getEncoded(), Base64.NO_WRAP);
             userDataObj.addProperty("publicKey", publicKey);
             userDataObj.addProperty("phoneID", registerUser.getPhoneID());
             userDataObj.addProperty("email", registerUser.getEmail());
             userDataObj.addProperty("name", registerUser.getName());
-            byte[] pbEncryptedData  =   CryptoCommons.pbeEncrypt(password.getBytes("UTF-8"), salt.getBytes("UTF-8"), userDataObj.toString().getBytes("UTF-8"));
+            byte[] pbEncryptedData  =   CryptoCommons.pbeEncrypt(hashedPass, hashedSalt, userDataObj.toString().getBytes("UTF-8"));
             String encodedUserData  =   URLEncoder.encode(Base64.encodeToString(pbEncryptedData, Base64.NO_WRAP), "UTF-8");
 
             JsonObject authContentsObj = new JsonObject();
@@ -98,11 +108,13 @@ public class AuthCreateActivity extends Activity
 
             UserRegisterTask task   =   new UserRegisterTask();
             task.execute(request);
+            Log.d("SEND_STUFF", "sent stuff");
         }
 
         catch(Exception e)
         {
-            Log.d("SEND_REGISTER_FAIL", e.getMessage());
+            e.printStackTrace();
+            Log.d("SEND_REGISTER_FAIL", "" + e.getMessage());
         }
     }
 
@@ -121,7 +133,33 @@ public class AuthCreateActivity extends Activity
         @Override
         protected void onPostExecute(String response)
         {
-            Log.d("REIGSTER_SEND_RESP", response);
+            try
+            {
+                JsonObject responseObj = CommUtils.parseJsonInput(response);
+                byte[] key = Base64.decode(responseObj.get("key").getAsString(), Base64.DEFAULT);
+                byte[] data = Base64.decode(responseObj.get("data").getAsString(), Base64.DEFAULT);
+                EncryptedSession encSession = new EncryptedSession(key, data, currentKeyPair.getPrivate());
+                encSession.unlock();
+                JsonObject  decryptedResponse   =   CommUtils.parseJsonInput(new String(encSession.getData()));
+
+                if(decryptedResponse.get("status").getAsBoolean())
+                {
+                    String nonce        =   decryptedResponse.get("nonce").getAsString();
+                    String requestID    =   decryptedResponse.get("requestID").getAsString();
+
+                    if(RequestManager.getInstance().verifyAndDestroy(requestID, nonce))
+                    {
+                        KeyManager.getInstance().setClientKeyPair(currentKeyPair);
+                        KeyManager.getInstance().saveClientKeyPair(AuthCreateActivity.this);
+                        Log.d("REGISTER_TASK_COMPLETE", decryptedResponse.get("statusMessage").getAsString());
+                    }
+                }
+            }
+
+            catch (Exception e)
+            {
+                Log.d("REGISTER_TASK_FAIL", e.getMessage());
+            }
         }
     }
 

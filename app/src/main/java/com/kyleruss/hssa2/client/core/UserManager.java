@@ -7,6 +7,7 @@
 package com.kyleruss.hssa2.client.core;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -17,7 +18,10 @@ public class UserManager
     private Map<String, User> onlineUsers;
     private User activeUser;
 
-    private UserManager() {}
+    private UserManager()
+    {
+        onlineUsers =   new HashMap<>();
+    }
 
     public User getActiveUser()
     {

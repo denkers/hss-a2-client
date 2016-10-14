@@ -32,16 +32,7 @@ public class CommUtils
     {
         session.initCipher(Cipher.ENCRYPT_MODE);
         String data =   URLEncoder.encode(Base64.encodeToString(session.processData(), Base64.NO_WRAP), "UTF-8");
-      //  String AESKEY   =   Base64.encodeToString(session.getAESKey(), Base64.NO_WRAP);
-       // Log.d("AES_KEY", AESKEY);
-     //   String encodedKey   =   Base64.encodeToString(session.encryptKey(), Base64.NO_WRAP);
-      //  Log.d("COMMUTILS", encodedKey);
-        byte[] encryptedKey =   session.encryptKey();
-        Log.d("enc_key_len", "" + encryptedKey.length);
-        String encodedKey   =   Base64.encodeToString(encryptedKey, Base64.NO_WRAP);
-        Log.d("ENCODED_KEY", encodedKey);
-        String key  =   URLEncoder.encode(encodedKey, "UTF-8");//URLEncoder.encode(Base64.encodeToString(session.encryptKey(), Base64.NO_WRAP), "utf-8");
-        //Log.d("COMMUTILS_URL", key);
+        String key  =   URLEncoder.encode(Base64.encodeToString(session.encryptKey(), Base64.NO_WRAP), "UTF-8");
 
         ServiceRequest serviceRequest   =   new ServiceRequest();
         serviceRequest.addParam("key", key);

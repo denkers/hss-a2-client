@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_connect"
     android:layout_width="match_parent"
@@ -10,4 +11,31 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.kyleruss.hssa2.client.activity.ConnectActivity">
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/connect_image"
+        android:layout_marginTop="71dp"
+        android:id="@+id/connectBtn"
+        android:layout_below="@+id/headerLogo"
+        android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/title"
+        android:layout_marginTop="141dp"
+        android:id="@+id/headerLogo"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/register_image"
+        android:id="@+id/registerBtn"
+        android:layout_below="@+id/connectBtn"
+        android:layout_alignLeft="@+id/connectBtn"
+        android:layout_alignStart="@+id/connectBtn"
+        android:layout_marginTop="3dp" />
 </RelativeLayout>
