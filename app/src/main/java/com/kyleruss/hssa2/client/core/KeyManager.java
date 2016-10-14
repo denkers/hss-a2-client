@@ -6,6 +6,10 @@
 
 package com.kyleruss.hssa2.client.core;
 
+import android.app.Activity;
+import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
+import android.preference.PreferenceManager;
 import android.util.Base64;
 import android.util.Log;
 
@@ -58,14 +62,46 @@ public class KeyManager
         }
     }
 
-    public void loadClientKeyPair()
+    public void loadClientKeyPair(Activity initActivity)
     {
+        SharedPreferences sharedPreferences =   PreferenceManager.getDefaultSharedPreferences(initActivity);
+        String storedPublicKey              =   sharedPreferences.getString(ClientConfig.STORED_PUKEY_NAME, null);
+        String storedPrivateKey             =   sharedPreferences.getString(ClientConfig.STORED_PRKEY_NAME, null);
 
+        if(storedPublicKey == null || storedPrivateKey == null)
+        {
+            clientKeyPair   =   null;
+            return;
+        }
+
+        try
+        {
+            byte[] publicKeyBytes   =   Base64.decode(storedPublicKey, Base64.DEFAULT);
+            byte[] privateKeyBytes  =   Base64.decode(storedPrivateKey, Base64.DEFAULT);
+            PublicKey pubKey        =   (PublicKey) CryptoUtils.stringToAsymKey(publicKeyBytes, true);
+            PrivateKey privKey      =   (PrivateKey) CryptoUtils.stringToAsymKey(privateKeyBytes, false);
+            clientKeyPair           =   new KeyPair(pubKey, privKey);
+        }
+
+        catch(Exception e)
+        {
+            Log.d("LOAD_KEYPAIR_FAIL", e.getMessage());
+            clientKeyPair   =   null;
+        }
     }
 
-    public void saveClientKeyPair()
+    public void saveClientKeyPair(Activity initActivity)
     {
+        if(clientKeyPair == null) return;
 
+        SharedPreferences sharedPreferences =   PreferenceManager.getDefaultSharedPreferences(initActivity);
+        SharedPreferences.Editor prefEditor =   sharedPreferences.edit();
+        String privateKeyStr                =   Base64.encodeToString(clientKeyPair.getPrivate().getEncoded(), Base64.NO_WRAP);
+        String publicKeyStr                 =   Base64.encodeToString(clientKeyPair.getPublic().getEncoded(), Base64.NO_WRAP);
+
+        prefEditor.putString(ClientConfig.STORED_PRKEY_NAME, privateKeyStr);
+        prefEditor.putString(ClientConfig.STORED_PUKEY_NAME, publicKeyStr);
+        prefEditor.commit();
     }
 
     public PrivateKey getClientPrivateKey()
