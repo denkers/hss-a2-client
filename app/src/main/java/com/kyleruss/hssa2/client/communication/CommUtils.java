@@ -49,7 +49,7 @@ public class CommUtils
     throws NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException,
     BadPaddingException, NoSuchAlgorithmException, InvalidKeyException
     {
-        String encData = CryptoCommons.publicEncrypt(data.toString(), key);
+        String encData = Base64.encodeToString(CryptoCommons.publicEncrypt(data.toString().getBytes("UTF-8"), key), Base64.NO_WRAP);
         ServiceRequest serviceRequest   =   new ServiceRequest();
         serviceRequest.addParam(paramName, encData);
 

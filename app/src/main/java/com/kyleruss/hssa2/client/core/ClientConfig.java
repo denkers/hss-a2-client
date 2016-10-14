@@ -10,9 +10,9 @@ public class ClientConfig
 {
     public static final int CONN_PORT       =   34918;
 
-    public static final String CONTEXT_PATH =   "/hssa2/live/";
+    public static final String CONTEXT_PATH =   "/hssa2/live";
 
-    public static final String CONN_URL     =   "http://localhost:" + CONN_PORT + CONTEXT_PATH;
+    public static final String CONN_URL     =   "http://192.168.1.68:" + CONN_PORT + CONTEXT_PATH;
 
     public static final String APP_NAME     =   "Safe SMS";
 }

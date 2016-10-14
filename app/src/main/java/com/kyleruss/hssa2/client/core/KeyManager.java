@@ -6,17 +6,23 @@
 
 package com.kyleruss.hssa2.client.core;
 
+import android.util.Base64;
 import android.util.Log;
 
 import com.kyleruss.hssa2.commons.CryptoUtils;
 
 import java.io.UnsupportedEncodingException;
+import java.security.Key;
+import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Map;
 
 import javax.crypto.spec.SecretKeySpec;
@@ -52,6 +58,16 @@ public class KeyManager
         }
     }
 
+    public void loadClientKeyPair()
+    {
+
+    }
+
+    public void saveClientKeyPair()
+    {
+
+    }
+
     public PrivateKey getClientPrivateKey()
     {
         if(clientKeyPair == null) return null;
@@ -77,7 +93,8 @@ public class KeyManager
     public void setServerPublicKey(String publicKeyStr)
     throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeySpecException
     {
-        serverPublicKey =   (PublicKey) CryptoUtils.stringToAsymKey(publicKeyStr, false, true);
+        byte[] keyBytes =   Base64.decode(publicKeyStr.getBytes("UTF-8"), Base64.DEFAULT);
+        serverPublicKey =   (PublicKey) CryptoUtils.stringToAsymKey(keyBytes, true);
     }
 
     public Map<String, SecretKeySpec> getSessionKeys()
@@ -113,6 +130,15 @@ public class KeyManager
     public void removePublicKey(String userID)
     {
         publicKeys.remove(userID);
+    }
+
+    public static Key stringToAsymKey(String keyValue, boolean decode, boolean publicKey)
+            throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeySpecException
+    {
+        byte[] keyBytes             =   decode? Base64.decode(keyValue.getBytes("UTF-8"), Base64.DEFAULT) : keyValue.getBytes("UTF-8");
+        KeySpec keySpec             =   publicKey? new X509EncodedKeySpec(keyBytes) : new PKCS8EncodedKeySpec(keyBytes);
+        KeyFactory keyFactory       =   KeyFactory.getInstance("RSA");
+        return publicKey? keyFactory.generatePublic(keySpec) : keyFactory.generatePrivate(keySpec);
     }
 
     public static KeyManager getInstance()

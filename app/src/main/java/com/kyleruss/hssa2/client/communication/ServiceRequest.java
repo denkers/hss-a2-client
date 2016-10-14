@@ -67,6 +67,8 @@ public class ServiceRequest
 
     public String prepareParams()
     {
+        if(params.size() == 0) return "";
+
         String enc  =   "";
         for(Object entryObj : params.entrySet())
         {
