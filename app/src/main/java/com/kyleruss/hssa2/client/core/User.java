@@ -9,13 +9,13 @@ package com.kyleruss.hssa2.client.core;
 public class User
 {
     private String name;
-    private String profileImage;
+    private byte[] profileImage;
     private String phoneID;
     private String email;
 
     public User()
     {
-        name = profileImage = phoneID = email = "";
+        name = phoneID = email = "";
     }
 
     public User(String phoneID)
@@ -23,18 +23,18 @@ public class User
         this.phoneID    =   phoneID;
     }
 
-    public User(String name, String phoneID)
+    public User(String phoneID, String name)
     {
         this.name           =   name;
         this.phoneID        =   phoneID;
     }
 
-    public String getProfileImage()
+    public byte[] getProfileImage()
     {
         return profileImage;
     }
 
-    public void setProfileImage(String profileImage)
+    public void setProfileImage(byte[] profileImage)
     {
         this.profileImage = profileImage;
     }
