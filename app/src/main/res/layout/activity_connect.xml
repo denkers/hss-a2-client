@@ -16,6 +16,7 @@
         android:src="@drawable/connect_image"
         android:layout_marginTop="71dp"
         android:id="@+id/connectBtn"
+        android:onClick="connectToServer"
         android:layout_below="@+id/headerLogo"
         android:layout_centerHorizontal="true" />
 
@@ -34,6 +35,7 @@
         android:src="@drawable/register_image"
         android:id="@+id/registerBtn"
         android:layout_below="@+id/connectBtn"
+        android:onClick="startAuthCreateActivity"
         android:layout_alignLeft="@+id/connectBtn"
         android:layout_alignStart="@+id/connectBtn"
         android:layout_marginTop="3dp" />

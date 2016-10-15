@@ -144,8 +144,8 @@ public class AuthCreateActivity extends Activity
 
         else
         {
-            String phone = UserManager.getInstance().getPhoneID(this);
-            registerUser = new User(name, phone);
+            String phoneID = UserManager.getInstance().getPhoneID(this);
+            registerUser = new User(phoneID, name);
             registerUser.setEmail(email);
             sendRegisterPackage();
         }
@@ -175,7 +175,6 @@ public class AuthCreateActivity extends Activity
                     {
                         KeyManager.getInstance().setClientKeyPair(currentKeyPair);
                         KeyManager.getInstance().saveClientKeyPair(AuthCreateActivity.this);
-                        UserManager.getInstance().setActiveUser(registerUser);
                         showConnectActivity();
                         Log.d("REGISTER_TASK_COMPLETE", decryptedResponse.get("statusMessage").getAsString());
                     }
