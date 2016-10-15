@@ -8,6 +8,7 @@ package com.kyleruss.hssa2.client.com.kyleruss.hssa2.client.nav;
 
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +16,22 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.gson.JsonObject;
 import com.kyleruss.hssa2.client.R;
+import com.kyleruss.hssa2.client.communication.CommUtils;
+import com.kyleruss.hssa2.client.communication.HTTPAsync;
+import com.kyleruss.hssa2.client.communication.ServiceRequest;
+import com.kyleruss.hssa2.client.core.ClientConfig;
+import com.kyleruss.hssa2.client.core.KeyManager;
+import com.kyleruss.hssa2.client.core.RequestManager;
 import com.kyleruss.hssa2.client.core.User;
 import com.kyleruss.hssa2.client.core.UserManager;
+import com.kyleruss.hssa2.commons.EncryptedSession;
+import com.kyleruss.hssa2.commons.RequestPaths;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class UsersFragment extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener
 {
@@ -48,6 +59,8 @@ public class UsersFragment extends Fragment implements AdapterView.OnItemClickLi
         listView.setAdapter(usersAdapter);
         listView.setOnItemClickListener(this);
 
+        fetchUserList();
+
         return view;
     }
 
@@ -57,12 +70,30 @@ public class UsersFragment extends Fragment implements AdapterView.OnItemClickLi
         Toast.makeText(getActivity().getApplicationContext(), "user: " + UserManager.getInstance().getUserAt(position).getName(), Toast.LENGTH_SHORT).show();
     }
 
-
     public void refreshUserList()
     {
-        UserManager.getInstance().addUser("abcd", new User("abcd", "heyy"));
         usersAdapter.setList(UserManager.getInstance().getUserList());
-        Toast.makeText(getActivity().getApplicationContext(), "Hello", Toast.LENGTH_SHORT).show();
+    }
+
+    public void fetchUserList()
+    {
+        try
+        {
+            Map.Entry<String, String> authRequest = RequestManager.getInstance().generateRequest();
+            JsonObject authObj          =   CommUtils.prepareAuthenticatedRequest(authRequest.getKey(), authRequest.getValue());
+            EncryptedSession encSession =   new EncryptedSession(authObj.toString().getBytes("UTF-8"), KeyManager.getInstance().getServerPublicKey());
+            ServiceRequest request      =   CommUtils.prepareEncryptedSessionRequest(encSession);
+            request.setURL(ClientConfig.CONN_URL + RequestPaths.USER_LIST_REQ);
+            request.setGet(false);
+
+            UserListTask task           =   new UserListTask();
+            task.execute(request);
+        }
+
+        catch(Exception e)
+        {
+            Log.d("FETCH_USERS_FAIL", e.getMessage());
+        }
     }
 
     @Override
@@ -70,5 +101,14 @@ public class UsersFragment extends Fragment implements AdapterView.OnItemClickLi
     {
         if(v.getId() == R.id.usersRefresh)
             refreshUserList();
+    }
+
+    private class UserListTask extends HTTPAsync
+    {
+        @Override
+        protected void onPostExecute(String response)
+        {
+            Log.d("FETCH_USERS_RESPONSE", response);
+        }
     }
 }

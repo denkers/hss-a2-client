@@ -7,10 +7,14 @@
 package com.kyleruss.hssa2.client.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.gson.JsonObject;
 import com.kyleruss.hssa2.client.R;
@@ -21,6 +25,7 @@ import com.kyleruss.hssa2.client.core.ClientConfig;
 import com.kyleruss.hssa2.client.core.KeyManager;
 import com.kyleruss.hssa2.client.core.RequestManager;
 import com.kyleruss.hssa2.client.core.User;
+import com.kyleruss.hssa2.client.core.UserManager;
 import com.kyleruss.hssa2.commons.CryptoCommons;
 import com.kyleruss.hssa2.commons.EncryptedSession;
 import com.kyleruss.hssa2.commons.Password;
@@ -41,8 +46,7 @@ public class AuthCreateActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth_create);
         //sendPasswordAuthEmail();
-        createTempUser();
-        sendRegisterPackage();
+      //  createTempUser();
     }
 
     private void sendPasswordAuthEmail()
@@ -67,6 +71,13 @@ public class AuthCreateActivity extends Activity
             Log.d("PASSWORD_SEND_FAIL", e.getMessage());
         }
     }
+
+    private void showConnectActivity()
+    {
+        Intent intent   =   new Intent(this, ConnectActivity.class);
+        startActivity(intent);
+    }
+
 
     private void sendRegisterPackage()
     {
@@ -118,13 +129,26 @@ public class AuthCreateActivity extends Activity
         }
     }
 
-    private void createTempUser()
+    public void createUser(View v)
     {
-        String email    =   "kyleruss2030@gmail.com";
-        String name     =   "Kyle Russell";
-        String phone    =   "(09) 0212522373";
-        registerUser    =   new User(name, phone);
-        registerUser.setEmail(email);
+        String email    =   ((EditText) findViewById(R.id.regEmailField)).getText().toString();
+        String reEmail  =   ((EditText) findViewById(R.id.regReEmailField)).getText().toString();
+        String name     =   ((EditText) findViewById(R.id.regUsernameField)).getText().toString();
+
+        if(email.equals("") || name.equals("") || !reEmail.equals(email))
+        {
+            registerUser    =   null;
+            Toast.makeText(this, "Invalid input, please try again", Toast.LENGTH_SHORT);
+            return;
+        }
+
+        else
+        {
+            String phone = UserManager.getInstance().getPhoneID(this);
+            registerUser = new User(name, phone);
+            registerUser.setEmail(email);
+            sendRegisterPackage();
+        }
     }
 
 
@@ -151,6 +175,8 @@ public class AuthCreateActivity extends Activity
                     {
                         KeyManager.getInstance().setClientKeyPair(currentKeyPair);
                         KeyManager.getInstance().saveClientKeyPair(AuthCreateActivity.this);
+                        UserManager.getInstance().setActiveUser(registerUser);
+                        showConnectActivity();
                         Log.d("REGISTER_TASK_COMPLETE", decryptedResponse.get("statusMessage").getAsString());
                     }
                 }

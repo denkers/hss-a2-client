@@ -3,6 +3,7 @@
     package="com.kyleruss.hssa2.client">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
 
     <application
         android:allowBackup="true"
@@ -12,20 +13,20 @@
         android:theme="@style/AppTheme">
         <activity android:name=".activity.ConnectActivity"
             android:theme="@android:style/Theme.Holo.Light.NoActionBar">
-           <!-- <intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter> -->
+            </intent-filter>
         </activity>
         <activity android:name=".activity.AuthCreateActivity"
             android:theme="@android:style/Theme.Holo.Light.NoActionBar" />
 
         <activity android:name=".activity.HomeActivity">
-            <intent-filter>
+           <!-- <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            </intent-filter> -->
         </activity>
     </application>
 

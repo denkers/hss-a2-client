@@ -6,6 +6,10 @@
 
 package com.kyleruss.hssa2.client.core;
 
+import android.app.Activity;
+import android.content.Context;
+import android.telephony.TelephonyManager;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -77,6 +81,14 @@ public class UserManager
     public int getOnlineUserCount()
     {
         return onlineUsers.size();
+    }
+
+    public String getPhoneID(Activity activity)
+    {
+        TelephonyManager telephoneManager   =   (TelephonyManager) activity.getSystemService(Context.TELEPHONY_SERVICE);
+        String phoneNumber                  =   telephoneManager.getLine1Number();
+
+        return phoneNumber;
     }
 
     public static UserManager getInstance()

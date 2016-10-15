@@ -20,6 +20,7 @@ import com.kyleruss.hssa2.client.communication.HTTPAsync;
 import com.kyleruss.hssa2.client.communication.ServiceRequest;
 import com.kyleruss.hssa2.client.core.ClientConfig;
 import com.kyleruss.hssa2.client.core.KeyManager;
+import com.kyleruss.hssa2.client.core.UserManager;
 import com.kyleruss.hssa2.commons.CryptoUtils;
 import com.kyleruss.hssa2.commons.EncryptedSession;
 import com.kyleruss.hssa2.commons.RequestPaths;
@@ -57,6 +58,12 @@ public class ConnectActivity extends Activity
         startActivity(intent);
     }
 
+    private void startHomeActivity()
+    {
+        Intent intent   =   new Intent(this, HomeActivity.class);
+        startActivity(intent);
+    }
+
     private class ConnectTask extends HTTPAsync
     {
         @Override
@@ -68,6 +75,7 @@ public class ConnectActivity extends Activity
                 String keyStr           =   responseObj.get("serverPublicKey").getAsString();
                 KeyManager.getInstance().setServerPublicKey(keyStr);
                 startAuthCreateActivity();
+             //   startHomeActivity();
             }
 
             catch(Exception e)

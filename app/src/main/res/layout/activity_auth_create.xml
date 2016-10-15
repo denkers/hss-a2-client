@@ -95,7 +95,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.7"
             android:text="Confirm"
-            android:id="@+id/rePasswordDesc"
+            android:id="@+id/reEmailDesc"
             android:drawableLeft="@drawable/tick"
             android:drawablePadding="5dp"/>
 
@@ -104,9 +104,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1.3"
             android:hint="Re-enter your email"
-            android:inputType="textPassword"
+            android:inputType="text"
             android:fontFamily="sans-serif"
-            android:id="@+id/regRePasswordField"
+            android:id="@+id/regReEmailField"
             android:textSize="14sp"/>
     </LinearLayout>
 
@@ -117,6 +117,7 @@
         android:src="@drawable/register_image"
         android:id="@+id/registerBtn"
         android:layout_marginTop="48dp"
+        android:onClick="createUser"
         android:layout_below="@+id/confirmPasswordFieldLayout"
         android:layout_centerHorizontal="true" />
 
