@@ -7,7 +7,7 @@
     android:paddingRight="30dp"
     android:paddingTop="30dp"
     android:background="#FFF"
-    tools:context="com.kyleruss.collector.mobile.base.SettingsFragment">
+    tools:context="com.kyleruss.hssa2.client.nav.SettingsFragment">
 
 
     <TextView
@@ -23,70 +23,52 @@
         android:drawableLeft="@drawable/settingsic"
         android:drawablePadding="15dp"/>
 
+
+   <!-- <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/profileImageLayout"
+        android:layout_below="@id/emailFieldLayout"
+        android:layout_marginTop="25dp"
+        android:weightSum="2"> -->
+
+    <!--</LinearLayout> -->
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/usernameFieldLayout"
         android:orientation="horizontal"
-        android:id="@+id/passwordFieldLayout"
-        android:layout_marginTop="100dp"
+        android:id="@+id/nameFieldLayout"
+        android:layout_marginTop="80dp"
         android:weightSum="2">
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.7"
-            android:text="Password"
-            android:id="@+id/passwordDesc"
-            android:drawableLeft="@drawable/passwordlocksm"
+            android:text="Name"
+            android:id="@+id/nameDesc"
+            android:drawableLeft="@drawable/user"
             android:drawablePadding="10dp"/>
 
         <EditText
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.3"
-            android:hint="6-18 characters"
-            android:inputType="textPassword"
-            android:fontFamily="sans-"
-            android:id="@+id/settingsPasswordField"
-            android:textSize="14sp"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/passwordFieldLayout"
-        android:orientation="horizontal"
-        android:id="@+id/pictureFieldLayout"
-        android:layout_marginTop="10dp"
-        android:weightSum="2">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.7"
-            android:text="Picture"
-            android:id="@+id/pictureFieldDesc"
-            android:drawableLeft="@drawable/camera"
-            android:drawablePadding="10dp"/>
-
-        <EditText
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.3"
-            android:hint="Enter a picture URL"
+            android:hint="Enter your name"
             android:inputType="text"
             android:fontFamily="sans-serif"
-            android:id="@+id/settingsPictureField"
+            android:id="@+id/nameField"
             android:textSize="14sp"/>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/pictureFieldLayout"
         android:orientation="horizontal"
         android:id="@+id/emailFieldLayout"
+        android:layout_below="@id/nameFieldLayout"
         android:layout_marginTop="10dp"
         android:weightSum="2">
 
@@ -110,6 +92,7 @@
             android:textSize="14sp"/>
     </LinearLayout>
 
+
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -117,6 +100,28 @@
         android:src="@drawable/savebtn"
         android:layout_below="@+id/emailFieldLayout"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="79dp" />
+        android:layout_marginTop="150dp" />
+
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/default_profile"
+        android:background="#000"
+        android:padding="1dp"
+        android:layout_below="@+id/emailFieldLayout"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="19dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Change profile image"
+        android:drawableLeft="@drawable/camera"
+        android:drawablePadding="10dp"
+        android:layout_below="@+id/emailFieldLayout"
+        android:layout_alignParentRight="true"
+
+        android:paddingTop="45dp"/>
 
 </RelativeLayout>

@@ -23,8 +23,11 @@ import android.widget.ImageView;
 
 import com.kyleruss.hssa2.client.R;
 import com.kyleruss.hssa2.client.activity.ConnectActivity;
+import com.kyleruss.hssa2.client.com.kyleruss.hssa2.client.nav.MessagesFragment;
 import com.kyleruss.hssa2.client.com.kyleruss.hssa2.client.nav.NavigationDrawerFragment;
+import com.kyleruss.hssa2.client.com.kyleruss.hssa2.client.nav.SendSMSFragment;
 import com.kyleruss.hssa2.client.com.kyleruss.hssa2.client.nav.SettingsFragment;
+import com.kyleruss.hssa2.client.com.kyleruss.hssa2.client.nav.UsersFragment;
 
 public class HomeActivity extends Activity implements NavigationDrawerFragment.NavigationDrawerCallbacks
 {
@@ -64,7 +67,7 @@ public class HomeActivity extends Activity implements NavigationDrawerFragment.N
     public void onNavigationDrawerItemSelected(int position)
     {
         Fragment fragment   =   null;
-        if(position == 3)
+        if(position == 4)
         {
             showLogout();
             return;
@@ -72,10 +75,10 @@ public class HomeActivity extends Activity implements NavigationDrawerFragment.N
 
         switch(position)
         {
-            case 0: fragment = new SettingsFragment(); break;
-          /*  case 0: fragment = new ProfileFragment(); break;
-            case 1: fragment = new SettingsFragment(); break;
-            case 2: fragment = new CardsFragment(); break; */
+            case 0: fragment = new SendSMSFragment(); break;
+            case 1: fragment = new MessagesFragment(); break;
+            case 2: fragment = new UsersFragment(); break;
+            case 3: fragment = new SettingsFragment(); break;
         }
 
         FragmentManager fragmentManager = getFragmentManager();

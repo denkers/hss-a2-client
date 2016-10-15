@@ -47,6 +47,7 @@ public class NavMenuAdapter extends ArrayAdapter<String>
             case 1: resource = R.drawable.settings; break;
             case 2: resource = R.drawable.logout; break;
             case 3: resource = R.drawable.logout; break;
+            case 4: resource = R.drawable.logout; break;
         }
 
         if(resource != -1)

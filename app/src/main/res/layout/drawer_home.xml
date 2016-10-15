@@ -6,4 +6,4 @@
     android:choiceMode="singleChoice"
     android:divider="@android:color/transparent"
     android:dividerHeight="0dp"
-    tools:context=".base.NavigationDrawerFragment" />
+    tools:context="com.kyleruss.hssa2.client.nav.NavigationDrawerFragment" />

@@ -6,7 +6,6 @@
 
 package com.kyleruss.hssa2.client.com.kyleruss.hssa2.client.nav;
 
-
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
