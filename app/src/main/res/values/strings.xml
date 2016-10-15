@@ -7,9 +7,12 @@
 
     <string name="action_settings">Settings</string>
 
-    <string name="title_section1">Send Message</string>
+    <string name="title_section1">Send SMS</string>
     <string name="title_section2">Messages</string>
     <string name="title_section3">Online Users</string>
     <string name="title_section4">Settings</string>
     <string name="title_section5">Disconnect</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
