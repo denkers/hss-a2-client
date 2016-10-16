@@ -19,16 +19,26 @@ import android.widget.TextView;
 import com.kyleruss.hssa2.client.R;
 import com.kyleruss.hssa2.client.core.User;
 
+import java.util.Collection;
+import java.util.List;
+
 public class UserListAdapter extends ArrayAdapter<User>
 {
     private final Activity context;
-    private User[] users;
+    private List<User> users;
 
-    public UserListAdapter(User[] users, Activity context)
+    public UserListAdapter(List<User> users, Activity context)
     {
         super(context, R.layout.user_list_row, users);
         this.users      =   users;
         this.context    =   context;
+    }
+
+    public void setList(Collection<User> userList)
+    {
+        super.clear();
+        super.addAll(userList);
+        super.notifyDataSetChanged();
     }
 
     public View getView(int position, View view, ViewGroup parent)
@@ -37,7 +47,7 @@ public class UserListAdapter extends ArrayAdapter<User>
         View viewRow            =   inflater.inflate(R.layout.user_list_row, null, true);
         TextView nameView       =   (TextView) viewRow.findViewById(R.id.nameView);
         ImageView profImageView =   (ImageView) viewRow.findViewById(R.id.profImageView);
-        User user               =   users[position];
+        User user               =   users.get(position);
 
         nameView.setText(user.getName() + "\n" + user.getPhoneID());
 

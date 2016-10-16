@@ -19,11 +19,13 @@ import com.kyleruss.hssa2.client.R;
 import com.kyleruss.hssa2.client.core.User;
 import com.kyleruss.hssa2.client.core.UserManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class UsersFragment extends Fragment implements AdapterView.OnItemClickListener
+public class UsersFragment extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener
 {
     private UserListAdapter usersAdapter;
+
 
     public UsersFragment() {}
 
@@ -33,12 +35,14 @@ public class UsersFragment extends Fragment implements AdapterView.OnItemClickLi
         getActivity().getActionBar().setTitle("Users");
         View view   =   inflater.inflate(R.layout.fragment_users, container, false);
 
+
+        view.findViewById(R.id.usersRefresh).setOnClickListener(this);
         UserManager userManager =   UserManager.getInstance();
         userManager.addUser("12541212", new User("12541212", "kyle"));
         userManager.addUser("12541214", new User("12541214", "joe"));
         userManager.addUser("12541215", new User("12541215", "russell"));
 
-        User[] userList     =   UserManager.getInstance().getUserList().toArray(new User[] {});
+        List userList     =   new ArrayList<>(UserManager.getInstance().getUserList());
         usersAdapter        =   new UserListAdapter(userList, getActivity());
         ListView listView   =   (ListView) view.findViewById(R.id.userList);
         listView.setAdapter(usersAdapter);
@@ -50,6 +54,21 @@ public class UsersFragment extends Fragment implements AdapterView.OnItemClickLi
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
-        Toast.makeText(getActivity(), "user: " + UserManager.getInstance().getUserAt(position).getName(), Toast.LENGTH_SHORT);
+        Toast.makeText(getActivity().getApplicationContext(), "user: " + UserManager.getInstance().getUserAt(position).getName(), Toast.LENGTH_SHORT).show();
+    }
+
+
+    public void refreshUserList()
+    {
+        UserManager.getInstance().addUser("abcd", new User("abcd", "heyy"));
+        usersAdapter.setList(UserManager.getInstance().getUserList());
+        Toast.makeText(getActivity().getApplicationContext(), "Hello", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onClick(View v)
+    {
+        if(v.getId() == R.id.usersRefresh)
+            refreshUserList();
     }
 }
