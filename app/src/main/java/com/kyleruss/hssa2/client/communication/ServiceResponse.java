@@ -25,6 +25,7 @@ public class ServiceResponse
     private boolean status;
     private String message;
     private JsonObject data;
+    private boolean info;
 
     public ServiceResponse()
     {
@@ -35,6 +36,13 @@ public class ServiceResponse
     {
         this.message    =   message;
         this.status     =   status;
+        info            =   false;
+    }
+
+    public ServiceResponse setInfo(boolean info)
+    {
+        this.info   =   info;
+        return this;
     }
 
     public String getMessage()
@@ -75,7 +83,11 @@ public class ServiceResponse
         textView.setText(message);
 
         ImageView imageView     =   (ImageView) layout.findViewById(R.id.stoast_icon);
-        imageView.setImageResource(status? R.drawable.successicon : R.drawable.failicon);
+
+        if(info)
+            imageView.setImageResource(R.drawable.info);
+        else
+            imageView.setImageResource(status? R.drawable.successicon : R.drawable.failicon);
 
         Toast toast =   new Toast(activity.getApplicationContext());
         toast.setGravity(Gravity.BOTTOM, 0, 0);

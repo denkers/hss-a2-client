@@ -26,6 +26,7 @@ import com.kyleruss.hssa2.client.com.kyleruss.hssa2.client.fragment.UsersFragmen
 import com.kyleruss.hssa2.client.communication.CommUtils;
 import com.kyleruss.hssa2.client.communication.HTTPAsync;
 import com.kyleruss.hssa2.client.communication.ServiceRequest;
+import com.kyleruss.hssa2.client.communication.ServiceResponse;
 import com.kyleruss.hssa2.client.core.ClientConfig;
 import com.kyleruss.hssa2.client.core.KeyManager;
 import com.kyleruss.hssa2.client.core.UserManager;
@@ -46,6 +47,7 @@ public class HomeActivity extends Activity implements NavigationDrawerFragment.N
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        getActionBar().setTitle("");
 
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
@@ -85,7 +87,7 @@ public class HomeActivity extends Activity implements NavigationDrawerFragment.N
 
         catch (Exception e)
         {
-            Toast.makeText(this, "Failed to disconnect", Toast.LENGTH_SHORT).show();
+            new ServiceResponse("Failed to logout", false).showToastResponse(HomeActivity.this);
         }
     }
 
@@ -127,10 +129,11 @@ public class HomeActivity extends Activity implements NavigationDrawerFragment.N
                 UserManager.getInstance().setActiveUser(null);
                 UserManager.getInstance().clearUsers();
                 KeyManager.getInstance().resetKeys();
+                new ServiceResponse("Successfully logged out", true).showToastResponse(HomeActivity.this);
                 showLogout();
             }
 
-            else Toast.makeText(HomeActivity.this, "Failed to logout", Toast.LENGTH_SHORT).show();
+            else new ServiceResponse("Failed to logout", false).showToastResponse(HomeActivity.this);
         }
     }
 }

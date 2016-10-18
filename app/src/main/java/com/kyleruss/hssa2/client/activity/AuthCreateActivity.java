@@ -14,6 +14,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.gson.JsonObject;
@@ -21,6 +22,7 @@ import com.kyleruss.hssa2.client.R;
 import com.kyleruss.hssa2.client.communication.CommUtils;
 import com.kyleruss.hssa2.client.communication.HTTPAsync;
 import com.kyleruss.hssa2.client.communication.ServiceRequest;
+import com.kyleruss.hssa2.client.communication.ServiceResponse;
 import com.kyleruss.hssa2.client.core.ClientConfig;
 import com.kyleruss.hssa2.client.core.KeyManager;
 import com.kyleruss.hssa2.client.core.RequestManager;
@@ -101,15 +103,28 @@ public class AuthCreateActivity extends Activity
     private class PasswordSendTask extends HTTPAsync
     {
         @Override
+        protected void onPreExecute()
+        {
+            ImageView registerControl    =   (ImageView) findViewById(R.id.registerBtn);
+            showServicingSpinner(registerControl);
+        }
+
+        @Override
         protected void onPostExecute(String response)
         {
-            Log.d("PASSWORD_SEND_RESP", response);
+            ImageView registerControl    =   (ImageView) findViewById(R.id.registerBtn);
+            hideServicingSpinner(registerControl, R.drawable.register_image);
+
             JsonObject responseObj  =   CommUtils.parseJsonInput(response);
 
             if(responseObj.get("actionStatus").getAsBoolean())
+            {
+                new ServiceResponse("A verification code has been sent to your email", true).setInfo(true).showToastResponse(AuthCreateActivity.this);
                 showCompletionActivity();
+            }
 
-            else Toast.makeText(AuthCreateActivity.this, "Failed to send authentication code", Toast.LENGTH_SHORT).show();
+            else new ServiceResponse("Failed to send verification code", false).showToastResponse(AuthCreateActivity.this);
+                //Toast.makeText(AuthCreateActivity.this, "Failed to send authentication code", Toast.LENGTH_SHORT).show();
         }
     }
 }

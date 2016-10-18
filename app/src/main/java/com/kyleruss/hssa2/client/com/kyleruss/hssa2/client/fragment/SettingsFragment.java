@@ -29,6 +29,7 @@ import com.kyleruss.hssa2.client.R;
 import com.kyleruss.hssa2.client.communication.CommUtils;
 import com.kyleruss.hssa2.client.communication.HTTPAsync;
 import com.kyleruss.hssa2.client.communication.ServiceRequest;
+import com.kyleruss.hssa2.client.communication.ServiceResponse;
 import com.kyleruss.hssa2.client.core.ClientConfig;
 import com.kyleruss.hssa2.client.core.KeyManager;
 import com.kyleruss.hssa2.client.core.RequestManager;
@@ -53,7 +54,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        getActivity().getActionBar().setTitle("Settings");
+        //getActivity().getActionBar().setTitle("Settings");
         View view                   =   inflater.inflate(R.layout.fragment_settings, container, false);
         EditText nameField          =   (EditText) view.findViewById(R.id.nameField);
         EditText emailField         =   (EditText) view.findViewById(R.id.emailField);
@@ -142,6 +143,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener
         catch (Exception e)
         {
             e.printStackTrace();
+            new ServiceResponse("Failed to save settings", false).showToastResponse(getActivity());
             Log.d("SAVE_SETTINGS_SEND_FAIL", e.getMessage());
             Toast.makeText(getActivity().getApplicationContext(), "Failed to save settings", Toast.LENGTH_SHORT).show();
         }
@@ -160,11 +162,20 @@ public class SettingsFragment extends Fragment implements View.OnClickListener
 
     private class SaveSettingsTask extends HTTPAsync
     {
+        protected void onPreExecute()
+        {
+            ImageView saveControl =   (ImageView) getView().findViewById(R.id.settingsSaveBtn);
+            showServicingSpinner(saveControl);
+        }
+
         @Override
         protected void onPostExecute(String response)
         {
             try
             {
+                ImageView saveControl =   (ImageView) getView().findViewById(R.id.settingsSaveBtn);
+                hideServicingSpinner(saveControl, R.drawable.savebtn);
+
                 EncryptedSession encSession =   CommUtils.decryptSessionResponse(response, KeyManager.getInstance().getClientPrivateKey());
                 JsonObject responseObj      =   CommUtils.parseJsonInput(new String(encSession.getData()));
                 String requestID            =   responseObj.get("requestID").getAsString();
@@ -172,23 +183,28 @@ public class SettingsFragment extends Fragment implements View.OnClickListener
 
                 if(RequestManager.getInstance().verifyAndDestroy(requestID, nonce))
                 {
-                    Toast.makeText(getActivity().getApplicationContext(), responseObj.get("message").getAsString(), Toast.LENGTH_SHORT).show();
+
                     if(responseObj.get("actionStatus").getAsBoolean())
                     {
                         User activeUser =   UserManager.getInstance().getActiveUser();
                         activeUser.setName(tempUser.getName());
                         activeUser.setEmail(tempUser.getEmail());
                         activeUser.setProfileImage(tempUser.getProfileImage());
-                        tempUser        = null;
+                        tempUser            =   null;
                         tempProfileImage    =   null;
+                        new ServiceResponse("Successfully updated settings", true).showToastResponse(getActivity());
                     }
+
+                    else new ServiceResponse("Failed to save settings", false).showToastResponse(getActivity());
                 }
+
+                else  new ServiceResponse("Failed to authenticate response", false).showToastResponse(getActivity());
             }
 
             catch(Exception e)
             {
                 e.printStackTrace();
-                Toast.makeText(getActivity().getApplicationContext(), "Failed to update account", Toast.LENGTH_SHORT).show();
+                new ServiceResponse("Failed to save settings", false).showToastResponse(getActivity());
                 //Log.d("SAVE_SETTINGS_FAIL", e.getMessage());
             }
         }

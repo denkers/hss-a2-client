@@ -7,6 +7,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.gson.JsonObject;
@@ -14,6 +15,7 @@ import com.kyleruss.hssa2.client.R;
 import com.kyleruss.hssa2.client.communication.CommUtils;
 import com.kyleruss.hssa2.client.communication.HTTPAsync;
 import com.kyleruss.hssa2.client.communication.ServiceRequest;
+import com.kyleruss.hssa2.client.communication.ServiceResponse;
 import com.kyleruss.hssa2.client.core.ClientConfig;
 import com.kyleruss.hssa2.client.core.KeyManager;
 import com.kyleruss.hssa2.client.core.RequestManager;
@@ -100,18 +102,30 @@ public class RegistrationCompleteActivity extends Activity
     private class UserRegisterTask extends HTTPAsync
     {
         @Override
+        protected void onPreExecute()
+        {
+            ImageView submitControl =   (ImageView) findViewById(R.id.submitBtn);
+            showServicingSpinner(submitControl);
+        }
+
+        @Override
         protected void onPostExecute(String response)
         {
             try
             {
+                ImageView submitControl =   (ImageView) findViewById(R.id.submitBtn);
+                hideServicingSpinner(submitControl, R.drawable.submit_image);
+
                 JsonObject responseObj = CommUtils.parseJsonInput(response);
                 byte[] key = Base64.decode(responseObj.get("key").getAsString(), Base64.DEFAULT);
                 byte[] data = Base64.decode(responseObj.get("data").getAsString(), Base64.DEFAULT);
                 EncryptedSession encSession = new EncryptedSession(key, data, currentKeyPair.getPrivate());
                 encSession.unlock();
                 JsonObject  decryptedResponse   =   CommUtils.parseJsonInput(new String(encSession.getData()));
+                boolean status                  =   decryptedResponse.get("status").getAsBoolean();
+                String statusMessage            =   decryptedResponse.get("statusMessage").getAsString();
 
-                if(decryptedResponse.get("status").getAsBoolean())
+                if(status)
                 {
                     String nonce        =   decryptedResponse.get("nonce").getAsString();
                     String requestID    =   decryptedResponse.get("requestID").getAsString();
@@ -121,10 +135,11 @@ public class RegistrationCompleteActivity extends Activity
                         KeyManager.getInstance().setClientKeyPair(currentKeyPair);
                         KeyManager.getInstance().saveClientKeyPair(RegistrationCompleteActivity.this);
                         UserManager.getInstance().savePhoneID(registerUser.getPhoneID(), RegistrationCompleteActivity.this);
-                        Toast.makeText(RegistrationCompleteActivity.this, decryptedResponse.get("statusMessage").getAsString(), Toast.LENGTH_SHORT).show();
                         showConnectActivity();
                     }
                 }
+
+                new ServiceResponse(statusMessage, status).showToastResponse(RegistrationCompleteActivity.this);
             }
 
             catch (Exception e)

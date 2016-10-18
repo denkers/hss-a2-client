@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.gson.JsonObject;
@@ -20,6 +21,7 @@ import com.kyleruss.hssa2.client.R;
 import com.kyleruss.hssa2.client.communication.CommUtils;
 import com.kyleruss.hssa2.client.communication.HTTPAsync;
 import com.kyleruss.hssa2.client.communication.ServiceRequest;
+import com.kyleruss.hssa2.client.communication.ServiceResponse;
 import com.kyleruss.hssa2.client.core.ClientConfig;
 import com.kyleruss.hssa2.client.core.KeyManager;
 import com.kyleruss.hssa2.client.core.RequestManager;
@@ -127,11 +129,13 @@ public class ConnectActivity extends Activity
                             nextUser.setProfileImage(profileImage);
                             UserManager.getInstance().setActiveUser(nextUser);
 
-                            Toast.makeText(ConnectActivity.this, "Successfully connected", Toast.LENGTH_SHORT).show();
+                           // Toast.makeText(ConnectActivity.this, "Successfully connected", Toast.LENGTH_SHORT).show();
+                            new ServiceResponse("Successfully connected", true).showToastResponse(ConnectActivity.this);
                             startHomeActivity();
                         }
 
-                        else Toast.makeText(ConnectActivity.this, "Failed to authenticate response", Toast.LENGTH_SHORT).show();
+                        else new ServiceResponse("Failed to connect to the authenticate response", false).showToastResponse(ConnectActivity.this);
+                        //Toast.makeText(ConnectActivity.this, "Failed to authenticate response", Toast.LENGTH_SHORT).show();
                     }
 
                     else Toast.makeText(ConnectActivity.this, decryptedResponse.get("statusMessage").getAsString(), Toast.LENGTH_SHORT).show();
@@ -143,7 +147,8 @@ public class ConnectActivity extends Activity
             catch(Exception e)
             {
                 e.printStackTrace();
-                Toast.makeText(ConnectActivity.this, "Failed to connect", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(ConnectActivity.this, "Failed to connect", Toast.LENGTH_SHORT).show();
+                new ServiceResponse("Failed to connect to the server", false).showToastResponse(ConnectActivity.this);
             }
         }
     }
@@ -151,10 +156,20 @@ public class ConnectActivity extends Activity
     private class ServerPublicFetchTask extends HTTPAsync
     {
         @Override
+        protected  void onPreExecute()
+        {
+            ImageView connectControl    =   (ImageView) findViewById(R.id.connectBtn);
+            showServicingSpinner(connectControl);
+        }
+
+        @Override
         protected void onPostExecute(String response)
         {
             try
             {
+                ImageView connectControl    =   (ImageView) findViewById(R.id.connectBtn);
+                hideServicingSpinner(connectControl, R.drawable.connect_image);
+
                 JsonObject responseObj  =    parseJsonInput(response);
                 String keyStr           =   responseObj.get("serverPublicKey").getAsString();
                 KeyManager.getInstance().setServerPublicKey(keyStr);
@@ -163,8 +178,8 @@ public class ConnectActivity extends Activity
 
             catch(Exception e)
             {
-                Toast.makeText(ConnectActivity.this, "Failed to connect to server", Toast.LENGTH_SHORT).show();
                 Log.d("SPUBLIC_FETCH_FAIL", e.getMessage());
+                new ServiceResponse("Failed to connect to the server", false).showToastResponse(ConnectActivity.this);
             }
         }
     }

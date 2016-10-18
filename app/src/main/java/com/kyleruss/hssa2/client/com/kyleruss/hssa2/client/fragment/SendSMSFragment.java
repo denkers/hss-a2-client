@@ -22,6 +22,7 @@ import com.kyleruss.hssa2.client.R;
 import com.kyleruss.hssa2.client.communication.CommUtils;
 import com.kyleruss.hssa2.client.communication.HTTPAsync;
 import com.kyleruss.hssa2.client.communication.ServiceRequest;
+import com.kyleruss.hssa2.client.communication.ServiceResponse;
 import com.kyleruss.hssa2.client.core.ClientConfig;
 import com.kyleruss.hssa2.client.core.KeyManager;
 import com.kyleruss.hssa2.client.core.MessageManager;
@@ -44,7 +45,7 @@ public class SendSMSFragment extends Fragment implements View.OnClickListener
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        getActivity().getActionBar().setTitle("Send SMS");
+        //getActivity().getActionBar().setTitle("Send SMS");
         View view   =   inflater.inflate(R.layout.fragment_send_sms, container, false);
         view.findViewById(R.id.sendSmsBtn).setOnClickListener(this);
 
@@ -68,7 +69,7 @@ public class SendSMSFragment extends Fragment implements View.OnClickListener
         if(receiverID.equals("") || content.equals(""))
         {
             String errorMsg =   "Please enter " + (receiverID.equals("")? "the recipients phone number" : "the message body");
-            Toast.makeText(getActivity().getApplicationContext(), errorMsg, Toast.LENGTH_SHORT).show();
+            new ServiceResponse(errorMsg, false).showToastResponse(getActivity());
             return;
         }
 
@@ -95,6 +96,7 @@ public class SendSMSFragment extends Fragment implements View.OnClickListener
 
                 catch(Exception e)
                 {
+                    new ServiceResponse("Failed to send SMS", false).showToastResponse(getActivity());
                     keyManager.removeSessionKey(receiverID);
                     return;
                 }
@@ -108,6 +110,7 @@ public class SendSMSFragment extends Fragment implements View.OnClickListener
 
             catch(Exception e)
             {
+             new ServiceResponse("Failed to send SMS", false).showToastResponse(getActivity());
                 e.printStackTrace();
              //   Log.d("SEND_SMS_FAIL", e.getMessage());
                 Toast.makeText(getActivity().getApplicationContext(), "Failed to send message", Toast.LENGTH_SHORT).show();
@@ -135,7 +138,8 @@ public class SendSMSFragment extends Fragment implements View.OnClickListener
 
         catch(Exception e)
         {
-            Toast.makeText(getActivity().getApplicationContext(), "Failed to send public key request", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getActivity().getApplicationContext(), "Failed to send public key request", Toast.LENGTH_SHORT).show();
+            new ServiceResponse("Failed to request public key", false).showToastResponse(getActivity());
             Log.d("REQUEST_PUB_KEY_FAIL", e.getMessage());
         }
     }
@@ -159,7 +163,7 @@ public class SendSMSFragment extends Fragment implements View.OnClickListener
             {
                 if(response.equals(""))
                 {
-                    Toast.makeText(getActivity().getApplicationContext(), "Failed to retrieve public key", Toast.LENGTH_SHORT).show();
+                    new ServiceResponse("Failed to get public key for user", false).showToastResponse(getActivity());
                     return;
                 }
 
@@ -182,11 +186,14 @@ public class SendSMSFragment extends Fragment implements View.OnClickListener
                     Log.d("PUBLIC_KEY_RESP", decryptedResponse.get("requestedKey").getAsString());
                     sendSMS();
                 }
+
+                else  new ServiceResponse("Failed to authenticate response", false).showToastResponse(getActivity());
             }
 
             catch(Exception e)
             {
                 e.printStackTrace();
+                new ServiceResponse("Failed to get public key for user", false).showToastResponse(getActivity());
                 //Log.d("CLIENT_PUBLIC_REQ_FAIL", e.getMessage());
             }
         }

@@ -6,6 +6,7 @@
     <style name="MainActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
         <item name="android:background">@color/actionbarColour</item>
         <item name="android:foreground">#FFF</item>
+        <item name="android:displayOptions">useLogo|showHome</item>
     </style>
 
     <style name="AppTheme.NoActionBar">

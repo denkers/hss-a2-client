@@ -32,7 +32,7 @@ public class MessagesFragment extends Fragment implements AdapterView.OnItemClic
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        getActivity().getActionBar().setTitle("Messages");
+        //getActivity().getActionBar().setTitle("Messages");
         View view   =    inflater.inflate(R.layout.fragment_messages, container, false);
 
         List messageList    =   MessageManager.getInstance().getMessages();

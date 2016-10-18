@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -23,6 +24,7 @@ import com.kyleruss.hssa2.client.R;
 import com.kyleruss.hssa2.client.communication.CommUtils;
 import com.kyleruss.hssa2.client.communication.HTTPAsync;
 import com.kyleruss.hssa2.client.communication.ServiceRequest;
+import com.kyleruss.hssa2.client.communication.ServiceResponse;
 import com.kyleruss.hssa2.client.core.ClientConfig;
 import com.kyleruss.hssa2.client.core.KeyManager;
 import com.kyleruss.hssa2.client.core.RequestManager;
@@ -38,14 +40,15 @@ import java.util.Map;
 public class UsersFragment extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener
 {
     private UserListAdapter usersAdapter;
+    private View view;
 
     public UsersFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        getActivity().getActionBar().setTitle("Users");
-        View view   =   inflater.inflate(R.layout.fragment_users, container, false);
+        //getActivity().getActionBar().setTitle("Users");
+        view   =   inflater.inflate(R.layout.fragment_users, container, false);
 
 
         view.findViewById(R.id.usersRefresh).setOnClickListener(this);
@@ -87,6 +90,7 @@ public class UsersFragment extends Fragment implements AdapterView.OnItemClickLi
 
     public void fetchUserList()
     {
+        Log.d("REFRSH", "refresh user list");
         try
         {
             Map.Entry<String, String> authRequest = RequestManager.getInstance().generateRequest();
@@ -103,7 +107,9 @@ public class UsersFragment extends Fragment implements AdapterView.OnItemClickLi
 
         catch(Exception e)
         {
-            Log.d("FETCH_USERS_FAIL", e.getMessage());
+            e.printStackTrace();
+            new ServiceResponse("Failed to fetch user list", false).showToastResponse(getActivity());
+            //Log.d("FETCH_USERS_FAIL", e.getMessage());
         }
     }
 
@@ -111,16 +117,26 @@ public class UsersFragment extends Fragment implements AdapterView.OnItemClickLi
     public void onClick(View v)
     {
         if(v.getId() == R.id.usersRefresh)
-            refreshUserList();
+            fetchUserList();
+
     }
 
     private class UserListTask extends HTTPAsync
     {
+        protected void onPreExecute()
+        {
+            ImageView refreshControl =   (ImageView) view.findViewById(R.id.usersRefresh);
+            showServicingSpinner(refreshControl);
+        }
+
         @Override
         protected void onPostExecute(String response)
         {
             try
             {
+                ImageView refreshControl =   (ImageView) getView().findViewById(R.id.usersRefresh);
+                hideServicingSpinner(refreshControl, R.drawable.refresh);
+
                 EncryptedSession encSession =   CommUtils.decryptSessionResponse(response, KeyManager.getInstance().getClientPrivateKey());
                 JsonObject responseObj      =   CommUtils.parseJsonInput(new String(encSession.getData()));
                 String requestID            =   responseObj.get("requestID").getAsString();
@@ -150,11 +166,13 @@ public class UsersFragment extends Fragment implements AdapterView.OnItemClickLi
                     Log.d("FETCH_USERS_RESPONSE", userListObj.toString());
                 }
 
-                else Toast.makeText(getActivity().getApplicationContext(), "Failed to authenticate response", Toast.LENGTH_SHORT).show();
+                else  new ServiceResponse("Failed to authenticate response", false).showToastResponse(getActivity());
+                //Toast.makeText(getActivity().getApplicationContext(), "Failed to authenticate response", Toast.LENGTH_SHORT).show();
             }
 
             catch(Exception e)
             {
+                new ServiceResponse("Failed to fetch user list", false).showToastResponse(getActivity());
                 Log.d("USER_LIST_FETCH_FAIL", e.getMessage());
             }
         }

@@ -18,6 +18,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kyleruss.hssa2.client.R;
+import com.kyleruss.hssa2.client.activity.AuthCreateActivity;
+import com.kyleruss.hssa2.client.communication.ServiceResponse;
 import com.kyleruss.hssa2.client.core.Message;
 import com.kyleruss.hssa2.client.core.MessageListAdapter;
 import com.kyleruss.hssa2.client.core.MessageManager;
@@ -37,7 +39,7 @@ public class MessageInspectFragment extends Fragment implements View.OnClickList
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        getActivity().getActionBar().setTitle("Read message");
+        //getActivity().getActionBar().setTitle("Read message");
         View view = inflater.inflate(R.layout.fragment_message_inspect, container, false);
         ImageView decryptBtn    =   ((ImageView) view.findViewById(R.id.decryptBtn));
         ImageView replyBtn      =   ((ImageView) view.findViewById(R.id.replyBtn));
@@ -77,7 +79,8 @@ public class MessageInspectFragment extends Fragment implements View.OnClickList
     public void decryptMessage()
     {
         if(currentMessage.isDecrypted())
-            Toast.makeText(getActivity().getApplicationContext(), "Message is already decrypted", Toast.LENGTH_SHORT).show();
+            new ServiceResponse("Message is already decrypted", true).setInfo(true).showToastResponse(getActivity());
+            //Toast.makeText(getActivity().getApplicationContext(), "Message is already decrypted", Toast.LENGTH_SHORT).show();
 
         else
         {
@@ -88,7 +91,8 @@ public class MessageInspectFragment extends Fragment implements View.OnClickList
                 ((TextView) getView().findViewById(R.id.msgContent)).setText(content);
             }
 
-            else Toast.makeText(getActivity().getApplicationContext(), "Failed to decrypt message", Toast.LENGTH_SHORT).show();
+            else new ServiceResponse("Failed to decrypt message", true).setInfo(true).showToastResponse(getActivity());
+                //Toast.makeText(getActivity().getApplicationContext(), "Failed to decrypt message", Toast.LENGTH_SHORT).show();
         }
     }
 
