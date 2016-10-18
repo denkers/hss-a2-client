@@ -16,23 +16,15 @@
             android:theme="@android:style/Theme.Holo.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".activity.AuthCreateActivity"
             android:theme="@android:style/Theme.Holo.Light.NoActionBar" />
-        <activity android:name=".activity.HomeActivity">
-
-            <!--
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            -->
-        </activity>
-        <activity android:name=".activity.RegistrationCompleteActivity"></activity>
+        <activity android:name=".activity.HomeActivity" />
+        <activity android:name=".activity.RegistrationCompleteActivity"
+            android:theme="@android:style/Theme.Holo.Light.NoActionBar" />
     </application>
 
 </manifest>
