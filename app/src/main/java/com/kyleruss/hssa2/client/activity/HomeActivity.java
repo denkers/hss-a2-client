@@ -14,13 +14,16 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.google.gson.JsonObject;
 import com.kyleruss.hssa2.client.R;
 import com.kyleruss.hssa2.client.activity.ConnectActivity;
 import com.kyleruss.hssa2.client.com.kyleruss.hssa2.client.nav.MessagesFragment;
@@ -28,6 +31,16 @@ import com.kyleruss.hssa2.client.com.kyleruss.hssa2.client.nav.NavigationDrawerF
 import com.kyleruss.hssa2.client.com.kyleruss.hssa2.client.nav.SendSMSFragment;
 import com.kyleruss.hssa2.client.com.kyleruss.hssa2.client.nav.SettingsFragment;
 import com.kyleruss.hssa2.client.com.kyleruss.hssa2.client.nav.UsersFragment;
+import com.kyleruss.hssa2.client.communication.CommUtils;
+import com.kyleruss.hssa2.client.communication.HTTPAsync;
+import com.kyleruss.hssa2.client.communication.ServiceRequest;
+import com.kyleruss.hssa2.client.core.ClientConfig;
+import com.kyleruss.hssa2.client.core.KeyManager;
+import com.kyleruss.hssa2.client.core.UserManager;
+import com.kyleruss.hssa2.commons.EncryptedSession;
+import com.kyleruss.hssa2.commons.RequestPaths;
+
+import java.io.UnsupportedEncodingException;
 
 public class HomeActivity extends Activity implements NavigationDrawerFragment.NavigationDrawerCallbacks
 {
@@ -63,13 +76,36 @@ public class HomeActivity extends Activity implements NavigationDrawerFragment.N
         startActivity(intent);
     }
 
+    private void logoutUser()
+    {
+        JsonObject requestObj   =   new JsonObject();
+        String phoneID          =   UserManager.getInstance().getActiveUser().getPhoneID();
+        requestObj.addProperty("phoneID", phoneID);
+
+        try
+        {
+            EncryptedSession encSession =   new EncryptedSession(requestObj.toString().getBytes("UTF-8"), KeyManager.getInstance().getServerPublicKey());
+            ServiceRequest request      =   CommUtils.prepareEncryptedSessionRequest(encSession);
+            request.setURL(ClientConfig.CONN_URL + RequestPaths.SERV_DISCON_REQ);
+            request.setGet(false);
+
+            LogoutTask task     =   new LogoutTask();
+            task.execute(request);
+        }
+
+        catch (Exception e)
+        {
+            Toast.makeText(this, "Failed to disconnect", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     @Override
     public void onNavigationDrawerItemSelected(int position)
     {
         Fragment fragment   =   null;
         if(position == 4)
         {
-            showLogout();
+            logoutUser();
             return;
         }
 
@@ -86,5 +122,25 @@ public class HomeActivity extends Activity implements NavigationDrawerFragment.N
         fragmentManager.beginTransaction()
                 .replace(R.id.container, fragment)
                 .commit();
+    }
+
+    private class LogoutTask extends HTTPAsync
+    {
+        @Override
+        protected void onPostExecute(String response)
+        {
+            JsonObject responseObj  =   CommUtils.parseJsonInput(response);
+
+            Log.d("DISC_RESPONSE", responseObj.toString());
+            if(responseObj.get("actionStatus").getAsBoolean())
+            {
+                UserManager.getInstance().setActiveUser(null);
+                UserManager.getInstance().clearUsers();
+                KeyManager.getInstance().resetKeys();
+                showLogout();
+            }
+
+            else Toast.makeText(HomeActivity.this, "Failed to logout", Toast.LENGTH_SHORT).show();
+        }
     }
 }

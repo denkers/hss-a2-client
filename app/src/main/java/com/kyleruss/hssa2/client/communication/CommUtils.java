@@ -40,6 +40,18 @@ public class CommUtils
         return serviceRequest;
     }
 
+    public static EncryptedSession decryptSessionResponse(String response, Key privateKey)
+    throws IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException
+    {
+        JsonObject responseObj = CommUtils.parseJsonInput(response);
+        byte[] key = Base64.decode(responseObj.get("key").getAsString(), Base64.DEFAULT);
+        byte[] data = Base64.decode(responseObj.get("data").getAsString(), Base64.DEFAULT);
+        EncryptedSession encSession = new EncryptedSession(key, data, privateKey);
+        encSession.unlock();
+
+        return encSession;
+    }
+
     public static ServiceRequest preparePublicEncryptedRequest(JsonObject data, Key key)
     throws NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException,
     BadPaddingException, NoSuchAlgorithmException, InvalidKeyException

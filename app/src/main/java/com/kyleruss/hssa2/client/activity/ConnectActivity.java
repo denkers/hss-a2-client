@@ -142,7 +142,7 @@ public class ConnectActivity extends Activity
             catch(Exception e)
             {
                 e.printStackTrace();
-                Log.d("CONNECT_FAIL", e.getMessage());
+              //  Log.d("CONNECT_FAIL", e.getMessage());
                 Toast.makeText(ConnectActivity.this, "Failed to connect", Toast.LENGTH_SHORT).show();
             }
         }
@@ -159,14 +159,12 @@ public class ConnectActivity extends Activity
                 String keyStr           =   responseObj.get("serverPublicKey").getAsString();
                 KeyManager.getInstance().setServerPublicKey(keyStr);
                 KeyManager.getInstance().loadClientKeyPair(ConnectActivity.this);
-                String pubKey = Base64.encodeToString(KeyManager.getInstance().getClientKeyPair().getPublic().getEncoded(), Base64.NO_WRAP);
-                //startAuthCreateActivity();
-             //   startHomeActivity();
             }
 
             catch(Exception e)
             {
-                Log.d("SPUBLIC_FETCH_FAIL", e.getMessage());
+                e.printStackTrace();
+              //  Log.d("SPUBLIC_FETCH_FAIL", e.getMessage());
             }
         }
     }

@@ -83,6 +83,11 @@ public class UserManager
         return onlineUsers.size();
     }
 
+    public void resetOnlineUsers()
+    {
+        onlineUsers.clear();
+    }
+
     public String getPhoneID(Activity activity)
     {
         TelephonyManager telephoneManager   =   (TelephonyManager) activity.getSystemService(Context.TELEPHONY_SERVICE);

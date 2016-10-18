@@ -72,6 +72,12 @@ public class KeyManager
         }
     }
 
+    public void resetKeys()
+    {
+        sessionKeys.clear();;
+        publicKeys.clear();
+    }
+
     public void loadClientKeyPair(Activity initActivity)
     {
         SharedPreferences sharedPreferences =   PreferenceManager.getDefaultSharedPreferences(initActivity);

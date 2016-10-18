@@ -8,6 +8,7 @@ package com.kyleruss.hssa2.client.com.kyleruss.hssa2.client.nav;
 
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.kyleruss.hssa2.client.R;
 import com.kyleruss.hssa2.client.communication.CommUtils;
@@ -80,9 +82,10 @@ public class UsersFragment extends Fragment implements AdapterView.OnItemClickLi
         try
         {
             Map.Entry<String, String> authRequest = RequestManager.getInstance().generateRequest();
-            JsonObject authObj          =   CommUtils.prepareAuthenticatedRequest(authRequest.getKey(), authRequest.getValue());
-            EncryptedSession encSession =   new EncryptedSession(authObj.toString().getBytes("UTF-8"), KeyManager.getInstance().getServerPublicKey());
-            ServiceRequest request      =   CommUtils.prepareEncryptedSessionRequest(encSession);
+            JsonObject requestObj           =   CommUtils.prepareAuthenticatedRequest(authRequest.getKey(), authRequest.getValue());
+            requestObj.addProperty("userID", UserManager.getInstance().getActiveUser().getPhoneID());
+            EncryptedSession encSession     =   new EncryptedSession(requestObj.toString().getBytes("UTF-8"), KeyManager.getInstance().getServerPublicKey());
+            ServiceRequest request          =   CommUtils.prepareEncryptedSessionRequest(encSession);
             request.setURL(ClientConfig.CONN_URL + RequestPaths.USER_LIST_REQ);
             request.setGet(false);
 
@@ -108,7 +111,44 @@ public class UsersFragment extends Fragment implements AdapterView.OnItemClickLi
         @Override
         protected void onPostExecute(String response)
         {
-            Log.d("FETCH_USERS_RESPONSE", response);
+            try
+            {
+                EncryptedSession encSession =   CommUtils.decryptSessionResponse(response, KeyManager.getInstance().getClientPrivateKey());
+                JsonObject responseObj      =   CommUtils.parseJsonInput(new String(encSession.getData()));
+                String requestID            =   responseObj.get("requestID").getAsString();
+                String nonce                =   responseObj.get("nonce").getAsString();
+
+                if(RequestManager.getInstance().verifyAndDestroy(requestID, nonce))
+                {
+                    JsonObject userListObj  =   responseObj.get("userList").getAsJsonObject();
+                    JsonArray userList      =   userListObj.get("users").getAsJsonArray();
+                    int userCount           =   userListObj.get("userCount").getAsInt();
+                    UserManager userManager =   UserManager.getInstance();
+                    userManager.clearUsers();
+
+                    for(int i = 0; i < userCount; i++)
+                    {
+                        JsonObject userObj  =   userList.get(i).getAsJsonObject();
+                        User user           =   new User(userObj.get("phoneID").getAsString(), userObj.get("name").getAsString());
+                        user.setEmail(userObj.get("email").getAsString());
+
+                        if(userObj.has("profileImage"))
+                            user.setProfileImage(Base64.decode(userObj.get("profileImage").getAsString(), Base64.DEFAULT));
+
+                        userManager.addUser(user.getPhoneID(), user);
+                    }
+
+                    refreshUserList();
+                    Log.d("FETCH_USERS_RESPONSE", userListObj.toString());
+                }
+
+                else Toast.makeText(getActivity().getApplicationContext(), "Failed to authenticate response", Toast.LENGTH_SHORT).show();
+            }
+
+            catch(Exception e)
+            {
+                Log.d("USER_LIST_FETCH_FAIL", e.getMessage());
+            }
         }
     }
 }
