@@ -24,17 +24,6 @@
         android:drawablePadding="15dp"/>
 
 
-   <!-- <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:id="@+id/profileImageLayout"
-        android:layout_below="@id/emailFieldLayout"
-        android:layout_marginTop="25dp"
-        android:weightSum="2"> -->
-
-    <!--</LinearLayout> -->
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -88,7 +77,7 @@
             android:hint="Enter a valid email"
             android:inputType="text"
             android:fontFamily="sans-serif"
-            android:id="@+id/settingsEmailField"
+            android:id="@+id/emailField"
             android:textSize="14sp"/>
     </LinearLayout>
 
@@ -101,6 +90,7 @@
         android:layout_below="@+id/emailFieldLayout"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="150dp" />
+
 
     <ImageView
         android:layout_width="80dp"
