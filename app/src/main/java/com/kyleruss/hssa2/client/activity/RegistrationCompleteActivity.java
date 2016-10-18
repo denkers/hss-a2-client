@@ -18,6 +18,7 @@ import com.kyleruss.hssa2.client.core.ClientConfig;
 import com.kyleruss.hssa2.client.core.KeyManager;
 import com.kyleruss.hssa2.client.core.RequestManager;
 import com.kyleruss.hssa2.client.core.User;
+import com.kyleruss.hssa2.client.core.UserManager;
 import com.kyleruss.hssa2.commons.CryptoCommons;
 import com.kyleruss.hssa2.commons.EncryptedSession;
 import com.kyleruss.hssa2.commons.RequestPaths;
@@ -119,6 +120,7 @@ public class RegistrationCompleteActivity extends Activity
                     {
                         KeyManager.getInstance().setClientKeyPair(currentKeyPair);
                         KeyManager.getInstance().saveClientKeyPair(RegistrationCompleteActivity.this);
+                        UserManager.getInstance().savePhoneID(registerUser.getPhoneID(), RegistrationCompleteActivity.this);
                         Toast.makeText(RegistrationCompleteActivity.this, decryptedResponse.get("statusMessage").getAsString(), Toast.LENGTH_SHORT).show();
                         showConnectActivity();
                     }

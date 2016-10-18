@@ -97,9 +97,29 @@ public class KeyManager
 
         else
         {
+            byte[] sessionInitiator =   generateSessionInitiator();
+            byte[] encryptedInitiator   =   CryptoCommons.publicEncrypt(sessionInitiator, publicKey);
+            String encodedInitiator     =   Base64.encodeToString(encryptedInitiator, Base64.NO_WRAP);
+            Log.d("EXPERIMENT", "LENGTH: " + encodedInitiator.length());
+            Log.d("WRAP_SESSION", Base64.encodeToString(publicKey.getEncoded(), Base64.NO_WRAP));
+
             byte[] encryptedKey =   CryptoCommons.publicEncrypt(sessionKey, publicKey);
             return encryptedKey;
         }
+    }
+
+    public byte[] generateSessionInitiator()
+    {
+        SecureRandom rGen   =   new SecureRandom();
+        byte[] sessionInitiator   =   new byte[6];
+        rGen.nextBytes(sessionInitiator);
+
+        return sessionInitiator;
+    }
+
+    public void generateSessionKeyFromInitiator(byte[] initiator)
+    {
+
     }
 
     public void resetKeys()

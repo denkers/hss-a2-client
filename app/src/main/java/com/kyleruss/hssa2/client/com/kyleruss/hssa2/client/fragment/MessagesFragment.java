@@ -35,12 +35,7 @@ public class MessagesFragment extends Fragment implements AdapterView.OnItemClic
         getActivity().getActionBar().setTitle("Messages");
         View view   =    inflater.inflate(R.layout.fragment_messages, container, false);
 
-        MessageManager messageManager   =   MessageManager.getInstance();
-        messageManager.addMessage(new Message("012321332", "Hello"));
-        messageManager.addMessage(new Message("34609234", "Hello"));
-        messageManager.addMessage(new Message("430436346", "Hello"));
-
-        List messageList    =   messageManager.getMessages();
+        List messageList    =   MessageManager.getInstance().getMessages();
         messageAdapter      =   new MessageListAdapter(messageList, getActivity());
         ListView listView   =   (ListView) view.findViewById(R.id.messageList);
         listView.setAdapter(messageAdapter);

@@ -12,7 +12,11 @@ public class ClientConfig
 
     public static final String CONTEXT_PATH         =   "/hssa2/live";
 
-    public static final String CONN_URL             =   "http://192.168.1.68:" + CONN_PORT + CONTEXT_PATH;
+    public static final String CONN_ADDR_LIVE       =   "http://122.62.25.62:";
+
+    public static final String CONN_ADDR_LOCAL      =   "http://192.168.1.68:";
+
+    public static final String CONN_URL             =   CONN_ADDR_LOCAL + CONN_PORT + CONTEXT_PATH;
 
     public static final String APP_NAME             =   "Safe SMS";
 

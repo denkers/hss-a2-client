@@ -77,6 +77,7 @@ public class ConnectActivity extends Activity
 
         catch(Exception e)
         {
+            e.printStackTrace();
             Log.d("CONNECT_FAIL", e.getMessage());
             Toast.makeText(this, "Failed to connect to the server", Toast.LENGTH_SHORT).show();
         }
@@ -105,7 +106,7 @@ public class ConnectActivity extends Activity
                 byte[] key = Base64.decode(responseObj.get("key").getAsString(), Base64.DEFAULT);
                 byte[] data = Base64.decode(responseObj.get("data").getAsString(), Base64.DEFAULT);
                 KeyPair clientKeyPair = KeyManager.getInstance().getClientKeyPair();
-                Log.d("CONNECT_RESPONSE", responseObj.toString());
+                Log.d("CONNECT_RESPONSE", "CONNECTED: " + responseObj.toString());
 
                 if (clientKeyPair != null)
                 {
@@ -162,6 +163,7 @@ public class ConnectActivity extends Activity
 
             catch(Exception e)
             {
+                Toast.makeText(ConnectActivity.this, "Failed to connect to server", Toast.LENGTH_SHORT).show();
                 Log.d("SPUBLIC_FETCH_FAIL", e.getMessage());
             }
         }

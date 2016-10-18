@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.kyleruss.hssa2.commons.CryptoCommons;
 
+import java.io.UnsupportedEncodingException;
 import java.security.PrivateKey;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +54,8 @@ public class MessageManager
 
             if (secretKey == null)
             {
-                byte[] decodedContent = Base64.decode(content, Base64.DEFAULT);
+                Log.d("MESSAGE_CONTENT", content);
+                byte[] decodedContent       =   Base64.decode(content, Base64.DEFAULT);
                 PrivateKey clientPrivate    =   keyManager.getClientPrivateKey();
                 byte[] decryptedContent     =   CryptoCommons.publicDecryptBytes(decodedContent, clientPrivate);
                 keyManager.setUserSessionKey(fromID, decryptedContent);
@@ -68,6 +70,7 @@ public class MessageManager
 
         catch(Exception e)
         {
+            e.printStackTrace();
             Log.d("MESSAGE_HANDLE_FAIL", e.getMessage());
         }
     }
@@ -106,14 +109,25 @@ public class MessageManager
 
     public void sendEncodedMessage(String toID, byte[] data)
     {
-        String encodedContent   =   Base64.encodeToString(data, Base64.NO_WRAP);
+        String encodedContent = Base64.encodeToString(data, Base64.NO_WRAP);
+        Log.d("SEND_ENCODED", "SENDING: " + encodedContent);
         sendMessage(toID, encodedContent);
     }
 
     public void sendMessage(String toID, String content)
     {
         SmsManager smsManager =     SmsManager.getDefault();
-        smsManager.sendTextMessage(toID, null, content, null, null);
+
+        if(content.length() <= 160)
+            smsManager.sendTextMessage(toID, null, content, null, null);
+        else
+        {
+            Log.d("SEND_MESSAGE", "sending long message");
+            ArrayList<String> parts =   smsManager.divideMessage(content);
+            Log.d("SEND_MESSAGE", "sending long message: " + parts.size());
+            //for(String part : parts)
+            smsManager.sendMultipartTextMessage(toID, null, parts, null, null);
+        }
     }
 
     public void readMessage(int index)

@@ -63,6 +63,15 @@ public class SendSMSFragment extends Fragment implements View.OnClickListener
     {
         MessageManager messageManager   =   MessageManager.getInstance();
         String receiverID               =   ((EditText) getView().findViewById(R.id.phoneIDField)).getText().toString();
+        String content                  = ((EditText) getView().findViewById(R.id.msgContentField)).getText().toString();
+
+        if(receiverID.equals("") || content.equals(""))
+        {
+            String errorMsg =   "Please enter " + (receiverID.equals("")? "the recipients phone number" : "the message body");
+            Toast.makeText(getActivity().getApplicationContext(), errorMsg, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         KeyManager keyManager           =   KeyManager.getInstance();
         PublicKey recvPublicKey         =   keyManager.getPublicKey(receiverID);
 
@@ -70,6 +79,7 @@ public class SendSMSFragment extends Fragment implements View.OnClickListener
 
         else
         {
+            Log.d("SEND_SMS", "user public key found");
             SecretKeySpec secretKey =   keyManager.getSessionKey(receiverID);
             if(secretKey == null)
             {
@@ -77,6 +87,7 @@ public class SendSMSFragment extends Fragment implements View.OnClickListener
                 {
                     byte[] generatedKey = keyManager.generateSessionKey();
                     keyManager.setUserSessionKey(receiverID, generatedKey);
+                    secretKey   =   keyManager.getSessionKey(receiverID);
 
                     byte[] encryptedKey = keyManager.wrapSessionKey(receiverID, generatedKey);
                     messageManager.sendEncodedMessage(receiverID, encryptedKey);
@@ -89,18 +100,18 @@ public class SendSMSFragment extends Fragment implements View.OnClickListener
                 }
             }
 
-            try
+           /* try
             {
-                String content = ((EditText) getView().findViewById(R.id.msgContentField)).getText().toString();
                 byte[] encryptedContent = CryptoCommons.AES(secretKey, content.getBytes("UTF-8"), true);
                 messageManager.sendEncodedMessage(receiverID, encryptedContent);
             }
 
             catch(Exception e)
             {
-                Log.d("SEND_SMS_FAIL", e.getMessage());
+                e.printStackTrace();
+             //   Log.d("SEND_SMS_FAIL", e.getMessage());
                 Toast.makeText(getActivity().getApplicationContext(), "Failed to send message", Toast.LENGTH_SHORT).show();
-            }
+            } */
         }
     }
 
@@ -146,6 +157,13 @@ public class SendSMSFragment extends Fragment implements View.OnClickListener
         {
             try
             {
+                if(response.equals(""))
+                {
+                    Toast.makeText(getActivity().getApplicationContext(), "Failed to retrieve public key", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+
                 JsonObject responseObj = CommUtils.parseJsonInput(response);
                 byte[] key  =   Base64.decode(responseObj.get("key").getAsString(), Base64.DEFAULT);
                 byte[] data =   Base64.decode(responseObj.get("data").getAsString(), Base64.DEFAULT);
@@ -161,13 +179,15 @@ public class SendSMSFragment extends Fragment implements View.OnClickListener
                     String requestedUser    =   decryptedResponse.get("requestedUser").getAsString();
                     byte[] requestedKey     =   Base64.decode(decryptedResponse.get("requestedKey").getAsString(), Base64.DEFAULT);
                     KeyManager.getInstance().setUserPublicKey(requestedUser, requestedKey);
+                    Log.d("PUBLIC_KEY_RESP", decryptedResponse.get("requestedKey").getAsString());
                     sendSMS();
                 }
             }
 
             catch(Exception e)
             {
-                Log.d("CLIENT_PUBLIC_REQ_FAIL", e.getMessage());
+                e.printStackTrace();
+                //Log.d("CLIENT_PUBLIC_REQ_FAIL", e.getMessage());
             }
         }
     }

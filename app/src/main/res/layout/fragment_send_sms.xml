@@ -1,5 +1,9 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+<RelativeLayout
     android:id="@+id/activity_auth_create"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,6 +11,7 @@
     android:paddingLeft="20dp"
     android:paddingRight="20dp"
     android:paddingTop="20dp"
+    android:focusableInTouchMode="true"
     tools:context="com.kyleruss.hssa2.client.com.kyleruss.hssa2.client.fragment.SendSMSFragment">
 
 
@@ -60,3 +65,4 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 </RelativeLayout>
+    </ScrollView>

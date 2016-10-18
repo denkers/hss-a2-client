@@ -30,13 +30,22 @@ public class SMSReceiver extends BroadcastReceiver
 
             if(bundleData != null)
             {
-                Object[] pdus       =   (Object[]) bundleData.get("pdus");
-                SmsMessage message  =   SmsMessage.createFromPdu((byte[]) pdus[0]);
+                Object[] pdus           =   (Object[]) bundleData.get("pdus");
+                String messageContent   =   "";
+                String sender           =   "";
 
-                String phoneID      =   message.getDisplayOriginatingAddress();
-                String content      =   message.getDisplayMessageBody();
-                MessageManager.getInstance().handleMessage(phoneID, content);
+                Log.d("pdu_len", "" + pdus.length);
 
+                for(Object pdu : pdus)
+                {
+                    SmsMessage message = SmsMessage.createFromPdu((byte[]) pdu);
+
+                    sender          =   message.getDisplayOriginatingAddress();
+                    messageContent  +=  message.getDisplayMessageBody();
+                }
+
+                Log.d("RECEIVED_MESSAGE", messageContent);
+                MessageManager.getInstance().handleMessage(sender, messageContent);
             }
         }
 

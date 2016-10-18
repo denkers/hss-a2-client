@@ -8,6 +8,8 @@ package com.kyleruss.hssa2.client.core;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 
 import java.util.Collection;
@@ -88,12 +90,19 @@ public class UserManager
         onlineUsers.clear();
     }
 
+    public void savePhoneID(String phoneID, Activity activity)
+    {
+        SharedPreferences sharedPreferences =   PreferenceManager.getDefaultSharedPreferences(activity);
+        SharedPreferences.Editor prefEditor =   sharedPreferences.edit();
+        prefEditor.putString("phoneID", phoneID);
+
+        prefEditor.commit();
+    }
+
     public String getPhoneID(Activity activity)
     {
-        TelephonyManager telephoneManager   =   (TelephonyManager) activity.getSystemService(Context.TELEPHONY_SERVICE);
-        String phoneNumber                  =   telephoneManager.getLine1Number();
-
-        return phoneNumber;
+        SharedPreferences sharedPreferences =   PreferenceManager.getDefaultSharedPreferences(activity);
+        return sharedPreferences.getString("phoneID", null);
     }
 
     public static UserManager getInstance()

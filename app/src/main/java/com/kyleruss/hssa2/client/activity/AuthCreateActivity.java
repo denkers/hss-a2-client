@@ -72,10 +72,10 @@ public class AuthCreateActivity extends Activity
     public void createUser(View v)
     {
         String email    =   ((EditText) findViewById(R.id.regEmailField)).getText().toString();
-        String reEmail  =   ((EditText) findViewById(R.id.regReEmailField)).getText().toString();
+        String phoneID  =   ((EditText) findViewById(R.id.phoneNumberField)).getText().toString();
         String name     =   ((EditText) findViewById(R.id.regUsernameField)).getText().toString();
 
-        if(email.equals("") || name.equals("") || !reEmail.equals(email))
+        if(email.equals("") || name.equals("") || phoneID.equals(""))
         {
             registerUser    =   null;
             Toast.makeText(this, "Invalid input, please try again", Toast.LENGTH_SHORT);
@@ -84,7 +84,6 @@ public class AuthCreateActivity extends Activity
 
         else
         {
-            String phoneID = UserManager.getInstance().getPhoneID(this);
             registerUser = new User(phoneID, name);
             registerUser.setEmail(email);
             sendPasswordAuthEmail();

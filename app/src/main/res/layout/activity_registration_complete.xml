@@ -48,14 +48,14 @@
         android:layout_centerHorizontal="true" />
 
     <TextView
-        android:text="Enter the verification code sent to your email"
+        android:text="Enter the code sent to your email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:drawableLeft="@drawable/notifications_small_icon"
         android:drawablePadding="10dp"
         android:id="@+id/verificationCodeNotification"
-        android:layout_marginBottom="48dp"
-        android:layout_above="@+id/authCodeField"
+        android:layout_marginTop="50dp"
+        android:layout_below="@+id/registerTitle"
         android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
