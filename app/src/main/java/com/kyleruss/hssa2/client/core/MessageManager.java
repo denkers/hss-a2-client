@@ -6,6 +6,7 @@
 
 package com.kyleruss.hssa2.client.core;
 
+import android.content.Context;
 import android.telephony.SmsManager;
 import android.util.Base64;
 import android.util.Log;
@@ -47,6 +48,7 @@ public class MessageManager
 
     public void handleMessage(String fromID, String content)
     {
+        Log.d("HANDLE_MESSAGE", "handling message: " + content.length());
         try
         {
             KeyManager keyManager = KeyManager.getInstance();
@@ -54,7 +56,6 @@ public class MessageManager
 
             if (secretKey == null)
             {
-                Log.d("MESSAGE_CONTENT", content);
                 byte[] decodedContent       =   Base64.decode(content, Base64.DEFAULT);
                 PrivateKey clientPrivate    =   keyManager.getClientPrivateKey();
                 byte[] decryptedContent     =   CryptoCommons.publicDecryptBytes(decodedContent, clientPrivate);
@@ -84,14 +85,15 @@ public class MessageManager
             try
             {
                 String from = message.getFrom();
-                KeyManager keyManager = KeyManager.getInstance();
-                SecretKeySpec secretKey = keyManager.getSessionKey(from);
-                byte[] decodedContent = Base64.decode(message.getContent(), Base64.DEFAULT);
+                KeyManager keyManager   =   KeyManager.getInstance();
+                SecretKeySpec secretKey =   keyManager.getSessionKey(from);
 
                 if (secretKey != null)
                 {
+                    byte[] decodedContent = Base64.decode(message.getContent(), Base64.DEFAULT);
                     String decryptedContent =   new String(CryptoCommons.AES(secretKey, decodedContent, false));
                     message.setContent(decryptedContent);
+                    message.setDecrypted(true);
                     return true;
                 }
 
@@ -122,9 +124,8 @@ public class MessageManager
             smsManager.sendTextMessage(toID, null, content, null, null);
         else
         {
-            Log.d("SEND_MESSAGE", "sending long message");
             ArrayList<String> parts =   smsManager.divideMessage(content);
-            Log.d("SEND_MESSAGE", "sending long message: " + parts.size());
+            Log.d("SEND_MESSAGE", "sending long message: " + content);
             //for(String part : parts)
             smsManager.sendMultipartTextMessage(toID, null, parts, null, null);
         }

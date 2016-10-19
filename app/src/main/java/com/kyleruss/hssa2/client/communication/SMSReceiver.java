@@ -6,6 +6,7 @@
 
 package com.kyleruss.hssa2.client.communication;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -17,9 +18,12 @@ import android.widget.Toast;
 
 import com.kyleruss.hssa2.client.core.MessageManager;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class SMSReceiver extends BroadcastReceiver
 {
-    private final SmsManager smsManager = SmsManager.getDefault();
+    private final SmsManager smsManager         =   SmsManager.getDefault();
 
     @Override
     public void onReceive(Context context, Intent intent)
@@ -34,23 +38,24 @@ public class SMSReceiver extends BroadcastReceiver
                 String messageContent   =   "";
                 String sender           =   "";
 
-                Log.d("pdu_len", "" + pdus.length);
 
-                for(Object pdu : pdus)
+                for(int i = 0; i < pdus.length; i++)
                 {
-                    SmsMessage message = SmsMessage.createFromPdu((byte[]) pdu);
+                    SmsMessage message = SmsMessage.createFromPdu((byte[]) pdus[i]);
 
                     sender          =   message.getDisplayOriginatingAddress();
-                    messageContent  +=  message.getDisplayMessageBody();
+                    String msgBody  =   message.getMessageBody();
+                    messageContent  += msgBody;
                 }
 
-                Log.d("RECEIVED_MESSAGE", messageContent);
+                Toast.makeText(context, "New message from: " + sender, Toast.LENGTH_SHORT).show();
                 MessageManager.getInstance().handleMessage(sender, messageContent);
             }
         }
 
         catch(Exception e)
         {
+            e.printStackTrace();
             Log.d("SMS_RECV_FAIL", e.getMessage());
         }
     }

@@ -64,7 +64,8 @@ public class SendSMSFragment extends Fragment implements View.OnClickListener
     {
         MessageManager messageManager   =   MessageManager.getInstance();
         String receiverID               =   ((EditText) getView().findViewById(R.id.phoneIDField)).getText().toString();
-        String content                  = ((EditText) getView().findViewById(R.id.msgContentField)).getText().toString();
+        EditText contentField           =   (EditText) getView().findViewById(R.id.msgContentField);
+        String content                  =   contentField.getText().toString();
 
         if(receiverID.equals("") || content.equals(""))
         {
@@ -102,7 +103,7 @@ public class SendSMSFragment extends Fragment implements View.OnClickListener
                 }
             }
 
-           /* try
+            try
             {
                 byte[] encryptedContent = CryptoCommons.AES(secretKey, content.getBytes("UTF-8"), true);
                 messageManager.sendEncodedMessage(receiverID, encryptedContent);
@@ -114,7 +115,10 @@ public class SendSMSFragment extends Fragment implements View.OnClickListener
                 e.printStackTrace();
              //   Log.d("SEND_SMS_FAIL", e.getMessage());
                 Toast.makeText(getActivity().getApplicationContext(), "Failed to send message", Toast.LENGTH_SHORT).show();
-            } */
+            }
+
+            contentField.setText("");
+            new ServiceResponse("Message has been sent", true).showToastResponse(getActivity());
         }
     }
 
@@ -138,6 +142,7 @@ public class SendSMSFragment extends Fragment implements View.OnClickListener
 
         catch(Exception e)
         {
+            e.printStackTrace();
             //Toast.makeText(getActivity().getApplicationContext(), "Failed to send public key request", Toast.LENGTH_SHORT).show();
             new ServiceResponse("Failed to request public key", false).showToastResponse(getActivity());
             Log.d("REQUEST_PUB_KEY_FAIL", e.getMessage());
@@ -157,10 +162,20 @@ public class SendSMSFragment extends Fragment implements View.OnClickListener
     {
 
         @Override
+        protected void onPreExecute()
+        {
+            ImageView sendSmsControl    =   (ImageView) getView().findViewById(R.id.sendSmsBtn);
+            showServicingSpinner(getActivity(), "Sending message");
+        }
+
+        @Override
         protected void onPostExecute(String response)
         {
             try
             {
+                ImageView sendSmsControl    =   (ImageView) getView().findViewById(R.id.sendSmsBtn);
+                hideServicingSpinner();
+
                 if(response.equals(""))
                 {
                     new ServiceResponse("Failed to get public key for user", false).showToastResponse(getActivity());
@@ -183,7 +198,6 @@ public class SendSMSFragment extends Fragment implements View.OnClickListener
                     String requestedUser    =   decryptedResponse.get("requestedUser").getAsString();
                     byte[] requestedKey     =   Base64.decode(decryptedResponse.get("requestedKey").getAsString(), Base64.DEFAULT);
                     KeyManager.getInstance().setUserPublicKey(requestedUser, requestedKey);
-                    Log.d("PUBLIC_KEY_RESP", decryptedResponse.get("requestedKey").getAsString());
                     sendSMS();
                 }
 

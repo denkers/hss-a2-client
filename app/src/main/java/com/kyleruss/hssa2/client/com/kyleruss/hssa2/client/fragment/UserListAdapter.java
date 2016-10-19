@@ -8,6 +8,8 @@ package com.kyleruss.hssa2.client.com.kyleruss.hssa2.client.fragment;
 
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,7 +53,17 @@ public class UserListAdapter extends ArrayAdapter<User>
         User user               =   users.get(position);
 
         nameView.setText(user.getName() + "\n" + user.getPhoneID());
-        profImageView.setImageResource(R.drawable.default_profile);
+
+        byte[] userProfileImage =   user.getProfileImage();
+
+        if(userProfileImage == null)
+            profImageView.setImageResource(R.drawable.default_profile);
+        else
+        {
+            Bitmap profileBtmap = BitmapFactory.decodeByteArray(userProfileImage, 0, userProfileImage.length);
+            profImageView.setImageBitmap(profileBtmap);
+        }
+
         return viewRow;
     }
 }

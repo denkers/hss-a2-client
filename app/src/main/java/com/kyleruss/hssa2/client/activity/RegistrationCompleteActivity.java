@@ -104,8 +104,7 @@ public class RegistrationCompleteActivity extends Activity
         @Override
         protected void onPreExecute()
         {
-            ImageView submitControl =   (ImageView) findViewById(R.id.submitBtn);
-            showServicingSpinner(submitControl);
+            showServicingSpinner(RegistrationCompleteActivity.this, "Finalizing registration");
         }
 
         @Override
@@ -113,8 +112,7 @@ public class RegistrationCompleteActivity extends Activity
         {
             try
             {
-                ImageView submitControl =   (ImageView) findViewById(R.id.submitBtn);
-                hideServicingSpinner(submitControl, R.drawable.submit_image);
+                hideServicingSpinner();
 
                 JsonObject responseObj = CommUtils.parseJsonInput(response);
                 byte[] key = Base64.decode(responseObj.get("key").getAsString(), Base64.DEFAULT);

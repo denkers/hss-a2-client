@@ -105,21 +105,19 @@ public class AuthCreateActivity extends Activity
         @Override
         protected void onPreExecute()
         {
-            ImageView registerControl    =   (ImageView) findViewById(R.id.registerBtn);
-            showServicingSpinner(registerControl);
+            showServicingSpinner(AuthCreateActivity.this, "Creating account");
         }
 
         @Override
         protected void onPostExecute(String response)
         {
-            ImageView registerControl    =   (ImageView) findViewById(R.id.registerBtn);
-            hideServicingSpinner(registerControl, R.drawable.register_image);
+            hideServicingSpinner();
 
             JsonObject responseObj  =   CommUtils.parseJsonInput(response);
 
             if(responseObj.get("actionStatus").getAsBoolean())
             {
-                new ServiceResponse("A verification code has been sent to your email", true).setInfo(true).showToastResponse(AuthCreateActivity.this);
+                new ServiceResponse("A verification code has been sent to your email address", true).setInfo(true).showToastResponse(AuthCreateActivity.this);
                 showCompletionActivity();
             }
 

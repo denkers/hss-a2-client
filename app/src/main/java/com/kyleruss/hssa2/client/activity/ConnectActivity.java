@@ -7,12 +7,15 @@
 package com.kyleruss.hssa2.client.activity;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -100,10 +103,18 @@ public class ConnectActivity extends Activity
     private class ConnectTask extends HTTPAsync
     {
         @Override
+        protected  void onPreExecute()
+        {
+            showServicingSpinner(ConnectActivity.this, "Signing in");
+        }
+
+        @Override
         protected void onPostExecute(String response)
         {
             try
             {
+                hideServicingSpinner();
+
                 JsonObject responseObj = CommUtils.parseJsonInput(response);
                 byte[] key = Base64.decode(responseObj.get("key").getAsString(), Base64.DEFAULT);
                 byte[] data = Base64.decode(responseObj.get("data").getAsString(), Base64.DEFAULT);
@@ -158,8 +169,7 @@ public class ConnectActivity extends Activity
         @Override
         protected  void onPreExecute()
         {
-            ImageView connectControl    =   (ImageView) findViewById(R.id.connectBtn);
-            showServicingSpinner(connectControl);
+            showServicingSpinner(ConnectActivity.this, "Connecting to server");
         }
 
         @Override
@@ -167,8 +177,7 @@ public class ConnectActivity extends Activity
         {
             try
             {
-                ImageView connectControl    =   (ImageView) findViewById(R.id.connectBtn);
-                hideServicingSpinner(connectControl, R.drawable.connect_image);
+                hideServicingSpinner();
 
                 JsonObject responseObj  =    parseJsonInput(response);
                 String keyStr           =   responseObj.get("serverPublicKey").getAsString();

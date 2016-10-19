@@ -80,7 +80,6 @@ public class MessageInspectFragment extends Fragment implements View.OnClickList
     {
         if(currentMessage.isDecrypted())
             new ServiceResponse("Message is already decrypted", true).setInfo(true).showToastResponse(getActivity());
-            //Toast.makeText(getActivity().getApplicationContext(), "Message is already decrypted", Toast.LENGTH_SHORT).show();
 
         else
         {
@@ -89,10 +88,10 @@ public class MessageInspectFragment extends Fragment implements View.OnClickList
             {
                 String content  =   currentMessage.getContent();
                 ((TextView) getView().findViewById(R.id.msgContent)).setText(content);
+                ((ImageView) getView().findViewById(R.id.decryptBtn)).setImageResource(R.drawable.decrypt_unavail_image);
             }
 
             else new ServiceResponse("Failed to decrypt message", true).setInfo(true).showToastResponse(getActivity());
-                //Toast.makeText(getActivity().getApplicationContext(), "Failed to decrypt message", Toast.LENGTH_SHORT).show();
         }
     }
 

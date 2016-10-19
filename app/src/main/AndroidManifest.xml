@@ -32,8 +32,10 @@
         <activity android:name=".activity.RegistrationCompleteActivity"
             android:theme="@android:style/Theme.Holo.Light.NoActionBar" />
 
-        <receiver android:name=".communication.SMSReceiver">
-            <intent-filter>
+        <receiver android:name=".communication.SMSReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter android:priority="999">
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>

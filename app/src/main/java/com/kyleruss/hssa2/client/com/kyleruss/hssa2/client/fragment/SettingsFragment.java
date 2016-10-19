@@ -164,8 +164,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener
     {
         protected void onPreExecute()
         {
-            ImageView saveControl =   (ImageView) getView().findViewById(R.id.settingsSaveBtn);
-            showServicingSpinner(saveControl);
+            showServicingSpinner(getActivity(), "Updating settings");
         }
 
         @Override
@@ -173,8 +172,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener
         {
             try
             {
-                ImageView saveControl =   (ImageView) getView().findViewById(R.id.settingsSaveBtn);
-                hideServicingSpinner(saveControl, R.drawable.savebtn);
+                hideServicingSpinner();
 
                 EncryptedSession encSession =   CommUtils.decryptSessionResponse(response, KeyManager.getInstance().getClientPrivateKey());
                 JsonObject responseObj      =   CommUtils.parseJsonInput(new String(encSession.getData()));

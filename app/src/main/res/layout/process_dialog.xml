@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="500dp"
+    android:layout_height="150dp"
+    android:background="#FFF"
+    android:padding="20dp">
+
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/spinner_animation"
+        android:layout_centerVertical="true"
+        android:id="@+id/processSpinner"
+         />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Sending authentication code"
+        android:layout_centerVertical="true"
+        android:id="@+id/processDialogText"
+        android:layout_toRightOf="@id/processSpinner"
+        android:layout_marginLeft="15dp"/>
+</RelativeLayout>

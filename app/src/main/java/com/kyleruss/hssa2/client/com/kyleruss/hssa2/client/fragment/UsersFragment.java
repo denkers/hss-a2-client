@@ -90,7 +90,6 @@ public class UsersFragment extends Fragment implements AdapterView.OnItemClickLi
 
     public void fetchUserList()
     {
-        Log.d("REFRSH", "refresh user list");
         try
         {
             Map.Entry<String, String> authRequest = RequestManager.getInstance().generateRequest();
@@ -125,8 +124,7 @@ public class UsersFragment extends Fragment implements AdapterView.OnItemClickLi
     {
         protected void onPreExecute()
         {
-            ImageView refreshControl =   (ImageView) view.findViewById(R.id.usersRefresh);
-            showServicingSpinner(refreshControl);
+            showServicingSpinner(getActivity(), "Retrieving online users");
         }
 
         @Override
@@ -134,8 +132,7 @@ public class UsersFragment extends Fragment implements AdapterView.OnItemClickLi
         {
             try
             {
-                ImageView refreshControl =   (ImageView) getView().findViewById(R.id.usersRefresh);
-                hideServicingSpinner(refreshControl, R.drawable.refresh);
+                hideServicingSpinner();
 
                 EncryptedSession encSession =   CommUtils.decryptSessionResponse(response, KeyManager.getInstance().getClientPrivateKey());
                 JsonObject responseObj      =   CommUtils.parseJsonInput(new String(encSession.getData()));

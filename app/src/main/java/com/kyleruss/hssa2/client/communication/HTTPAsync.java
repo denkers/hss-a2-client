@@ -6,10 +6,14 @@
 
 package com.kyleruss.hssa2.client.communication;
 
+import android.app.Dialog;
+import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.AsyncTask;
 import android.view.View;
+import android.view.Window;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.gson.JsonObject;
 import com.kyleruss.hssa2.client.R;
@@ -28,6 +32,8 @@ import java.util.Map;
 
 public abstract class HTTPAsync extends AsyncTask<ServiceRequest, Void, String>
 {
+    private Dialog processDialog;
+
     private String getResponse(HttpURLConnection conn) throws IOException
     {
         String response =   "";
@@ -64,21 +70,37 @@ public abstract class HTTPAsync extends AsyncTask<ServiceRequest, Void, String>
         return serviceResponse;
     }
 
-
-    public static void showServicingSpinner(ImageView v)
+    public void showServicingSpinner(Context context)
     {
-        v.setImageResource(android.R.color.transparent);
-        v.setBackgroundResource(R.drawable.spinner_animation);
-        AnimationDrawable animation =   (AnimationDrawable) v.getBackground();
-        animation.start();
+        showServicingSpinner(context, "Please wait");
     }
 
-    public static void hideServicingSpinner(ImageView v, int prevDrawable)
+    public void showServicingSpinner(Context context, String message)
     {
+        /*v.setImageResource(android.R.color.transparent);
+        v.setBackgroundResource(R.drawable.spinner_animation);
         AnimationDrawable animation =   (AnimationDrawable) v.getBackground();
+        animation.start(); */
+
+        processDialog   =   new Dialog(context);
+        processDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        processDialog.setContentView(R.layout.process_dialog);
+
+        ((TextView) processDialog.findViewById(R.id.processDialogText)).setText(message);
+        AnimationDrawable animation =   (AnimationDrawable) (processDialog.findViewById(R.id.processSpinner)).getBackground();
+        animation.start();
+        processDialog.show();
+    }
+
+    public void hideServicingSpinner()
+    {
+        if(processDialog == null) return;
+
+        AnimationDrawable animation =   (AnimationDrawable) (processDialog.findViewById(R.id.processSpinner).getBackground());
         animation.stop();
-        v.setBackgroundResource(android.R.color.transparent);
-        v.setImageResource(prevDrawable);
+        processDialog.dismiss();
+        //v.setBackgroundResource(android.R.color.transparent);
+        //v.setImageResource(prevDrawable);
     }
 
     @Override

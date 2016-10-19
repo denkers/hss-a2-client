@@ -71,7 +71,6 @@ public class MessagesFragment extends Fragment implements AdapterView.OnItemClic
         if(message != null)
         {
             message.setRead(true);
-            message.setDecrypted(true);
             showMessageInspectFragment(message);
         }
     }
