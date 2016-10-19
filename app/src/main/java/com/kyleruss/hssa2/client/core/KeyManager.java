@@ -13,9 +13,11 @@ import android.preference.PreferenceManager;
 import android.util.Base64;
 import android.util.Log;
 
+import com.kyleruss.hssa2.commons.CryptoCommons;
 import com.kyleruss.hssa2.commons.CryptoUtils;
 
 import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.KeyFactory;
 import java.security.KeyPair;
@@ -23,6 +25,7 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -30,6 +33,9 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 
 public class KeyManager
@@ -69,6 +75,30 @@ public class KeyManager
         {
             Log.e("KeyManager", e.getMessage());
             return null;
+        }
+    }
+
+    public byte[] generateSessionKey()
+    {
+        SecureRandom rGen   =   new SecureRandom();
+        byte[] sessionKey   =   new byte[16];
+        rGen.nextBytes(sessionKey);
+
+        return sessionKey;
+    }
+
+    public byte[] wrapSessionKey(String receiver, byte[] sessionKey)
+    throws NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException,
+    BadPaddingException, NoSuchAlgorithmException, InvalidKeyException
+    {
+        PublicKey publicKey =   publicKeys.get(receiver);
+
+        if(publicKey == null) return null;
+
+        else
+        {
+            byte[] encryptedKey =   CryptoCommons.publicEncrypt(sessionKey, publicKey);
+            return encryptedKey;
         }
     }
 

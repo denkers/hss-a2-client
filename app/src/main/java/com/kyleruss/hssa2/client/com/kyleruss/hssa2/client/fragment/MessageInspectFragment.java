@@ -81,7 +81,14 @@ public class MessageInspectFragment extends Fragment implements View.OnClickList
 
         else
         {
+            MessageManager messageManager   =   MessageManager.getInstance();
+            if(messageManager.decryptMessage(currentMessage))
+            {
+                String content  =   currentMessage.getContent();
+                ((TextView) getView().findViewById(R.id.msgContent)).setText(content);
+            }
 
+            else Toast.makeText(getActivity().getApplicationContext(), "Failed to decrypt message", Toast.LENGTH_SHORT).show();
         }
     }
 

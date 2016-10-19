@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/send_sms_image"
         android:layout_marginTop="12dp"
-        android:id="@+id/imageView"
+        android:id="@+id/sendSmsBtn"
         android:layout_below="@+id/msgContentField"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
