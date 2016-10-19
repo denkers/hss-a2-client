@@ -4,7 +4,7 @@
 //  Highly Secured Systems A2
 //======================================
 
-package com.kyleruss.hssa2.client.com.kyleruss.hssa2.client.nav;
+package com.kyleruss.hssa2.client.com.kyleruss.hssa2.client.fragment;
 
 import android.app.Activity;
 import android.content.Context;

@@ -4,7 +4,7 @@
 //  Highly Secured Systems A2
 //======================================
 
-package com.kyleruss.hssa2.client.com.kyleruss.hssa2.client.nav;
+package com.kyleruss.hssa2.client.com.kyleruss.hssa2.client.fragment;
 
 import android.os.Bundle;
 import android.app.Fragment;
@@ -39,7 +39,6 @@ public class UsersFragment extends Fragment implements AdapterView.OnItemClickLi
 {
     private UserListAdapter usersAdapter;
 
-
     public UsersFragment() {}
 
     @Override
@@ -50,26 +49,35 @@ public class UsersFragment extends Fragment implements AdapterView.OnItemClickLi
 
 
         view.findViewById(R.id.usersRefresh).setOnClickListener(this);
-        UserManager userManager =   UserManager.getInstance();
-        userManager.addUser("12541212", new User("12541212", "kyle"));
-        userManager.addUser("12541214", new User("12541214", "joe"));
-        userManager.addUser("12541215", new User("12541215", "russell"));
-
-        List userList     =   new ArrayList<>(UserManager.getInstance().getUserList());
+        List userList       =   new ArrayList<>(UserManager.getInstance().getUserList());
         usersAdapter        =   new UserListAdapter(userList, getActivity());
         ListView listView   =   (ListView) view.findViewById(R.id.userList);
         listView.setAdapter(usersAdapter);
         listView.setOnItemClickListener(this);
 
         fetchUserList();
-
         return view;
+    }
+
+    private void showSendSMSFragmentForUser(User user)
+    {
+        Fragment smsFragment    =   new SendSMSFragment();
+        Bundle data             =   new Bundle();
+        data.putString("phoneID", user.getPhoneID());
+        smsFragment.setArguments(data);
+
+        getFragmentManager()
+        .beginTransaction()
+        .replace(R.id.container, smsFragment)
+        .addToBackStack(null)
+        .commit();
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
-        Toast.makeText(getActivity().getApplicationContext(), "user: " + UserManager.getInstance().getUserAt(position).getName(), Toast.LENGTH_SHORT).show();
+        User user   =   UserManager.getInstance().getUserAt(position);
+        showSendSMSFragmentForUser(user);
     }
 
     public void refreshUserList()

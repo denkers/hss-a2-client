@@ -102,7 +102,7 @@ public class ConnectActivity extends Activity
             try
             {
                 JsonObject responseObj = CommUtils.parseJsonInput(response);
-                byte[] key = Base64.decode(responseObj.get("key").getAsString(), Base64.DEFAULT); // could be
+                byte[] key = Base64.decode(responseObj.get("key").getAsString(), Base64.DEFAULT);
                 byte[] data = Base64.decode(responseObj.get("data").getAsString(), Base64.DEFAULT);
                 KeyPair clientKeyPair = KeyManager.getInstance().getClientKeyPair();
                 Log.d("CONNECT_RESPONSE", responseObj.toString());
@@ -142,7 +142,6 @@ public class ConnectActivity extends Activity
             catch(Exception e)
             {
                 e.printStackTrace();
-              //  Log.d("CONNECT_FAIL", e.getMessage());
                 Toast.makeText(ConnectActivity.this, "Failed to connect", Toast.LENGTH_SHORT).show();
             }
         }
@@ -163,8 +162,7 @@ public class ConnectActivity extends Activity
 
             catch(Exception e)
             {
-                e.printStackTrace();
-              //  Log.d("SPUBLIC_FETCH_FAIL", e.getMessage());
+                Log.d("SPUBLIC_FETCH_FAIL", e.getMessage());
             }
         }
     }

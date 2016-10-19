@@ -150,6 +150,19 @@ public class KeyManager
         Log.d("SERVER_PUBLIC_KEY", Base64.encodeToString(serverPublicKey.getEncoded(), Base64.NO_WRAP));
     }
 
+    public void setUserPublicKey(String userID, byte[] keyData)
+    throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeySpecException
+    {
+        PublicKey publicKey     =   (PublicKey) CryptoUtils.stringToAsymKey(keyData, true);
+        publicKeys.put(userID, publicKey);
+    }
+
+    public void setUserSessionKey(String userID, byte[] keyData)
+    {
+        SecretKeySpec keySpec   =   new SecretKeySpec(keyData, "AES");
+        sessionKeys.put(userID, keySpec);
+    }
+
     public Map<String, SecretKeySpec> getSessionKeys()
     {
         return sessionKeys;

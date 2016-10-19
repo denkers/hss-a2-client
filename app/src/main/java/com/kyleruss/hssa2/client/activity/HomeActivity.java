@@ -8,29 +8,21 @@ package com.kyleruss.hssa2.client.activity;
 
 import android.app.Activity;
 
-import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.gson.JsonObject;
 import com.kyleruss.hssa2.client.R;
-import com.kyleruss.hssa2.client.activity.ConnectActivity;
-import com.kyleruss.hssa2.client.com.kyleruss.hssa2.client.nav.MessagesFragment;
-import com.kyleruss.hssa2.client.com.kyleruss.hssa2.client.nav.NavigationDrawerFragment;
-import com.kyleruss.hssa2.client.com.kyleruss.hssa2.client.nav.SendSMSFragment;
-import com.kyleruss.hssa2.client.com.kyleruss.hssa2.client.nav.SettingsFragment;
-import com.kyleruss.hssa2.client.com.kyleruss.hssa2.client.nav.UsersFragment;
+import com.kyleruss.hssa2.client.com.kyleruss.hssa2.client.fragment.MessagesFragment;
+import com.kyleruss.hssa2.client.com.kyleruss.hssa2.client.fragment.NavigationDrawerFragment;
+import com.kyleruss.hssa2.client.com.kyleruss.hssa2.client.fragment.SendSMSFragment;
+import com.kyleruss.hssa2.client.com.kyleruss.hssa2.client.fragment.SettingsFragment;
+import com.kyleruss.hssa2.client.com.kyleruss.hssa2.client.fragment.UsersFragment;
 import com.kyleruss.hssa2.client.communication.CommUtils;
 import com.kyleruss.hssa2.client.communication.HTTPAsync;
 import com.kyleruss.hssa2.client.communication.ServiceRequest;
@@ -39,8 +31,6 @@ import com.kyleruss.hssa2.client.core.KeyManager;
 import com.kyleruss.hssa2.client.core.UserManager;
 import com.kyleruss.hssa2.commons.EncryptedSession;
 import com.kyleruss.hssa2.commons.RequestPaths;
-
-import java.io.UnsupportedEncodingException;
 
 public class HomeActivity extends Activity implements NavigationDrawerFragment.NavigationDrawerCallbacks
 {

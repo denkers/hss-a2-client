@@ -6,8 +6,16 @@
 
 package com.kyleruss.hssa2.client.core;
 
+import android.util.Base64;
+import android.util.Log;
+
+import com.kyleruss.hssa2.commons.CryptoCommons;
+
+import java.security.PrivateKey;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.crypto.spec.SecretKeySpec;
 
 public class MessageManager
 {
@@ -32,6 +40,49 @@ public class MessageManager
     public List<Message> getMessages()
     {
         return messages;
+    }
+
+    public boolean decryptMessage(Message message)
+    {
+        if(message == null) return false;
+
+        else
+        {
+            try
+            {
+                String from = message.getFrom();
+                KeyManager keyManager = KeyManager.getInstance();
+                SecretKeySpec secretKey = keyManager.getSessionKey(from);
+                byte[] decodedContent = Base64.decode(message.getContent(), Base64.DEFAULT);
+
+                if (secretKey == null)
+                {
+                    PrivateKey clientPrivate = keyManager.getClientPrivateKey();
+                    byte[] decryptedContent = CryptoCommons.publicDecryptBytes(decodedContent, clientPrivate);
+                    keyManager.setUserSessionKey(from, decryptedContent);
+                    return true;
+                }
+
+                else
+                {
+                    String decryptedContent =   new String(CryptoCommons.AESDecrypt(secretKey, decodedContent));
+                    message.setContent(decryptedContent);
+                    return true;
+                }
+            }
+
+            catch(Exception e)
+            {
+                Log.d("MESSAGE_DECR_FAIL", e.getMessage());
+                return false;
+            }
+        }
+    }
+
+    public void readMessage(int index)
+    {
+        Message message =   messages.get(index);
+        if(message != null) message.setRead(true);
     }
 
     public static MessageManager getInstance()

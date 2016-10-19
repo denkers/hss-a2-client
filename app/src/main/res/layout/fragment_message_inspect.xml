@@ -1,0 +1,83 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_auth_create"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="20dp"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
+    android:paddingTop="20dp"
+    tools:context="com.kyleruss.hssa2.client.fragment.MessageInspectFragment">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="From"
+        android:id="@+id/fromText"
+        android:layout_marginTop="20dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:drawableLeft="@drawable/phone_image"
+        android:drawablePadding="10dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Received:"
+        android:id="@+id/recvText"
+        android:layout_below="@id/fromText"
+        android:layout_marginTop="30dp"
+        android:drawableLeft="@drawable/calendar"
+        android:drawablePadding="10dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Content"
+        android:id="@+id/contentText"
+        android:layout_below="@id/recvText"
+        android:layout_marginTop="30dp"
+        android:drawableLeft="@drawable/content_image"
+        android:drawablePadding="10dp"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/contentText"
+        android:fillViewport="true"
+        android:id="@+id/contentScroll"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/border">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:id="@+id/msgContent"
+            android:text="tests"/>
+    </ScrollView>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/reply_image"
+        android:layout_below="@id/contentScroll"
+        android:layout_marginTop="10dp"
+        android:id="@+id/replyBtn"
+        android:layout_alignParentRight="true"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/decrypt_image"
+        android:layout_toLeftOf="@id/replyBtn"
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/contentScroll"
+        android:id="@+id/decryptBtn" />
+
+</RelativeLayout>

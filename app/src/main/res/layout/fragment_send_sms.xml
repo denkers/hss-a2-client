@@ -1,5 +1,4 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_auth_create"
     android:layout_width="match_parent"
@@ -8,7 +7,7 @@
     android:paddingLeft="20dp"
     android:paddingRight="20dp"
     android:paddingTop="20dp"
-    tools:context="com.kyleruss.hssa2.client.com.kyleruss.hssa2.client.nav.SendSMSFragment">
+    tools:context="com.kyleruss.hssa2.client.com.kyleruss.hssa2.client.fragment.SendSMSFragment">
 
 
     <TextView
@@ -30,7 +29,7 @@
         android:src="@drawable/send_sms_image"
         android:layout_marginTop="12dp"
         android:id="@+id/imageView"
-        android:layout_below="@+id/editText2"
+        android:layout_below="@+id/msgContentField"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
@@ -39,7 +38,7 @@
         android:layout_height="wrap_content"
         android:inputType="phone"
         android:ems="10"
-        android:id="@+id/editText"
+        android:id="@+id/phoneIDField"
         android:layout_marginTop="40dp"
         android:layout_below="@+id/smsTitle"
         android:drawableLeft="@drawable/phone_image"
@@ -54,10 +53,10 @@
         android:ems="10"
 
         android:padding="10dp"
-        android:id="@+id/editText2"
+        android:id="@+id/msgContentField"
         android:background="@drawable/border"
         android:layout_marginTop="64dp"
-        android:layout_below="@+id/editText"
+        android:layout_below="@id/phoneIDField"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 </RelativeLayout>
