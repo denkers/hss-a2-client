@@ -6,7 +6,9 @@
 
 package com.kyleruss.hssa2.client.core;
 
-public class User
+import java.io.Serializable;
+
+public class User implements Serializable
 {
     private String name;
     private byte[] profileImage;
