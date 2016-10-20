@@ -32,7 +32,6 @@ public class MessagesFragment extends Fragment implements AdapterView.OnItemClic
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        //getActivity().getActionBar().setTitle("Messages");
         View view   =    inflater.inflate(R.layout.fragment_messages, container, false);
 
         List messageList    =   MessageManager.getInstance().getMessages();
@@ -44,6 +43,7 @@ public class MessagesFragment extends Fragment implements AdapterView.OnItemClic
         return view;
     }
 
+    //Shows the message inspect fragment with the passed message
     private void showMessageInspectFragment(Message message)
     {
         Fragment msgInspectFragment     =   new MessageInspectFragment();
@@ -58,11 +58,6 @@ public class MessagesFragment extends Fragment implements AdapterView.OnItemClic
                 .commit();
     }
 
-    public void loadMessages()
-    {
-        List messageList    =   MessageManager.getInstance().getMessages();
-        messageAdapter.setList(messageList);
-    }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id)

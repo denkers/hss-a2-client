@@ -46,25 +46,30 @@ import static android.app.Activity.RESULT_OK;
 
 public class SettingsFragment extends Fragment implements View.OnClickListener
 {
+    //The user object manipulated during the settings updating
     private User tempUser;
+
+    //The image bytes set when user changes profile image
     private byte[] tempProfileImage;
 
     public SettingsFragment() {}
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        //getActivity().getActionBar().setTitle("Settings");
         View view                   =   inflater.inflate(R.layout.fragment_settings, container, false);
         EditText nameField          =   (EditText) view.findViewById(R.id.nameField);
         EditText emailField         =   (EditText) view.findViewById(R.id.emailField);
         ImageView profileImageField =   (ImageView) view.findViewById(R.id.changeProfileImage);
 
-        UserManager userManager =   UserManager.getInstance();
-        User activeUser         =   userManager.getActiveUser();
+        //Set initial field text to active user data
+        UserManager userManager     =   UserManager.getInstance();
+        User activeUser             =   userManager.getActiveUser();
         nameField.setText(activeUser.getName());
         emailField.setText(activeUser.getEmail());
 
+        //Set current profile image to active users profile image
         if(activeUser.getProfileImage() != null)
         {
             Bitmap profileBtmp  =   BitmapFactory.decodeByteArray(activeUser.getProfileImage(), 0, activeUser.getProfileImage().length);
@@ -76,12 +81,15 @@ public class SettingsFragment extends Fragment implements View.OnClickListener
         return view;
     }
 
+    //Displays the media picking activity
     public void openImage()
     {
         Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(i, 1);
     }
 
+    //Once an image has been picked, set the temporary image bytes
+    //Then display the picked image in settings
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
@@ -105,6 +113,8 @@ public class SettingsFragment extends Fragment implements View.OnClickListener
         }
     }
 
+    //Sends a request to update the users settings
+    //Allows user to change name, email or profile image
     public void saveSettings()
     {
         try
@@ -116,13 +126,15 @@ public class SettingsFragment extends Fragment implements View.OnClickListener
 
             tempUser        =   new User(userID, name);
             tempUser.setEmail(email);
+
+            //If no profile image set then don't pass it
             if(tempProfileImage == null)
                 tempUser.setProfileImage(UserManager.getInstance().getActiveUser().getProfileImage());
             else
             tempUser.setProfileImage(tempProfileImage);
 
-            Map.Entry<String, String> authRequest = RequestManager.getInstance().generateRequest();
-            JsonObject requestObj = CommUtils.prepareAuthenticatedRequest(authRequest.getKey(), authRequest.getValue());
+            Map.Entry<String, String> authRequest   =   RequestManager.getInstance().generateRequest();
+            JsonObject requestObj                   =   CommUtils.prepareAuthenticatedRequest(authRequest.getKey(), authRequest.getValue());
             requestObj.addProperty("userID", userID);
             requestObj.addProperty("name", name);
             requestObj.addProperty("email", email);
@@ -131,6 +143,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener
                 requestObj.addProperty("profileImage", profile);
 
 
+            //Encrypt request with AES and encrypt key using RSA with servers public key
             EncryptedSession encSession =   new EncryptedSession(requestObj.toString().getBytes("UTF-8"), KeyManager.getInstance().getServerPublicKey());
             ServiceRequest request      =   CommUtils.prepareEncryptedSessionRequest(encSession);
             request.setURL(ClientConfig.CONN_URL + RequestPaths.USER_SETTINGS_SAVE);
@@ -142,10 +155,8 @@ public class SettingsFragment extends Fragment implements View.OnClickListener
 
         catch (Exception e)
         {
-            e.printStackTrace();
             new ServiceResponse("Failed to save settings", false).showToastResponse(getActivity());
             Log.d("SAVE_SETTINGS_SEND_FAIL", e.getMessage());
-            Toast.makeText(getActivity().getApplicationContext(), "Failed to save settings", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -160,6 +171,9 @@ public class SettingsFragment extends Fragment implements View.OnClickListener
             openImage();
     }
 
+    //Response handler for update settings request
+    //Need to verify the response and check if update was successful
+    //Then update the active user with the temp user details
     private class SaveSettingsTask extends HTTPAsync
     {
         protected void onPreExecute()
@@ -174,16 +188,19 @@ public class SettingsFragment extends Fragment implements View.OnClickListener
             {
                 hideServicingSpinner();
 
+                //Decrypt key with RSA using clients private key, decrypt message with AES using the key
                 EncryptedSession encSession =   CommUtils.decryptSessionResponse(response, KeyManager.getInstance().getClientPrivateKey());
                 JsonObject responseObj      =   CommUtils.parseJsonInput(new String(encSession.getData()));
                 String requestID            =   responseObj.get("requestID").getAsString();
                 String nonce                =   responseObj.get("nonce").getAsString();
 
+                //Verify response
                 if(RequestManager.getInstance().verifyAndDestroy(requestID, nonce))
                 {
-
+                    //Check if update was successful
                     if(responseObj.get("actionStatus").getAsBoolean())
                     {
+                        //Update active user with the new user settings
                         User activeUser =   UserManager.getInstance().getActiveUser();
                         activeUser.setName(tempUser.getName());
                         activeUser.setEmail(tempUser.getEmail());
@@ -201,9 +218,8 @@ public class SettingsFragment extends Fragment implements View.OnClickListener
 
             catch(Exception e)
             {
-                e.printStackTrace();
                 new ServiceResponse("Failed to save settings", false).showToastResponse(getActivity());
-                //Log.d("SAVE_SETTINGS_FAIL", e.getMessage());
+                Log.d("SAVE_SETTINGS_FAIL", e.getMessage());
             }
         }
     }

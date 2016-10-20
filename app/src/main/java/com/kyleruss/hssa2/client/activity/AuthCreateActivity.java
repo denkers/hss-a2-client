@@ -37,6 +37,12 @@ import java.net.URLEncoder;
 import java.security.KeyPair;
 import java.util.Map;
 
+//-----------------------------------------
+//  AuthCreateActivity
+//-----------------------------------------
+//  Layout: R.layout.activity_auth_create
+//  About: Create user accounts and request password email
+
 public class AuthCreateActivity extends Activity
 {
     private User registerUser;
@@ -48,6 +54,9 @@ public class AuthCreateActivity extends Activity
         setContentView(R.layout.activity_auth_create);
     }
 
+    //Sends a request to for a verification
+    //password to be sent to the users email
+    //Password is sent to the email user inputs
     private void sendPasswordAuthEmail()
     {
         try
@@ -71,6 +80,9 @@ public class AuthCreateActivity extends Activity
         }
     }
 
+    //Creates a temporary user from the registration fields
+    //Initializes the registerUser field which is later passed
+    //to the RegistrationCompleteActivity to finalize the registration
     public void createUser(View v)
     {
         String email    =   ((EditText) findViewById(R.id.regEmailField)).getText().toString();
@@ -80,7 +92,7 @@ public class AuthCreateActivity extends Activity
         if(email.equals("") || name.equals("") || phoneID.equals(""))
         {
             registerUser    =   null;
-            Toast.makeText(this, "Invalid input, please try again", Toast.LENGTH_SHORT);
+            new ServiceResponse("Invalid input, please enter correct details", false).showToastResponse(this);
             return;
         }
 
@@ -92,6 +104,9 @@ public class AuthCreateActivity extends Activity
         }
     }
 
+    //Starts the activity to finalize registration
+    //Passes the temporary registration user data
+    //which will be saved if the registration is completed
     private void showCompletionActivity()
     {
         Intent intent   =   new Intent(this, RegistrationCompleteActivity.class);
@@ -100,6 +115,9 @@ public class AuthCreateActivity extends Activity
     }
 
 
+    //Response handler for email password request
+    //Verifies if password email was successfully sent
+    //and then transfers user to finalize the registration
     private class PasswordSendTask extends HTTPAsync
     {
         @Override
@@ -112,9 +130,10 @@ public class AuthCreateActivity extends Activity
         protected void onPostExecute(String response)
         {
             hideServicingSpinner();
-
             JsonObject responseObj  =   CommUtils.parseJsonInput(response);
 
+            //Check if server successfully sent the password email
+            //If so, transfer user to the registration finalization
             if(responseObj.get("actionStatus").getAsBoolean())
             {
                 new ServiceResponse("A verification code has been sent to your email address", true).setInfo(true).showToastResponse(AuthCreateActivity.this);
@@ -122,7 +141,6 @@ public class AuthCreateActivity extends Activity
             }
 
             else new ServiceResponse("Failed to send verification code", false).showToastResponse(AuthCreateActivity.this);
-                //Toast.makeText(AuthCreateActivity.this, "Failed to send authentication code", Toast.LENGTH_SHORT).show();
         }
     }
 }

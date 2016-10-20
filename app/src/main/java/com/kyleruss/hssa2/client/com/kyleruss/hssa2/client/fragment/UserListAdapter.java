@@ -44,6 +44,8 @@ public class UserListAdapter extends ArrayAdapter<User>
         users   =   new ArrayList<>(userList);
     }
 
+    //Returns a view displaying the users name
+    //And also their profile image (uses R.drawable.default_profile if none)
     public View getView(int position, View view, ViewGroup parent)
     {
         LayoutInflater inflater =   context.getLayoutInflater();

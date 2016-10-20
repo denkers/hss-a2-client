@@ -17,8 +17,13 @@ import java.util.Map;
 
 public class ServiceRequest
 {
+    //The connection URL
     private String url;
+
+    //Params to be passed
     private Map<String, Object> params;
+
+    //True if this is a GET request false if POST
     private boolean isGet;
 
     public ServiceRequest()
@@ -70,6 +75,7 @@ public class ServiceRequest
         this.isGet  =   isGet;
     }
 
+    //Generates the param string from the parameter map
     public String prepareParams()
     {
         if(params.size() == 0) return "";
@@ -88,7 +94,9 @@ public class ServiceRequest
         return enc;
     }
 
-    public HttpURLConnection getConnection() throws MalformedURLException, IOException
+    //Creates a connection with either GET/POST methods
+    //URL, params and method must be set before calling
+    public HttpURLConnection getConnection() throws IOException
     {
         String preparedURL      =   isGet? (url + "?" + prepareParams()) : url;
         URL urlObj              =   new URL(preparedURL);

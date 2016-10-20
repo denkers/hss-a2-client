@@ -41,9 +41,21 @@ import javax.crypto.spec.SecretKeySpec;
 public class KeyManager
 {
     private static KeyManager instance;
+
+    //The clients public-private key pair
     private KeyPair clientKeyPair;
+
+    //The current user session keys that the client has
+    //Key: The users phone number/id
+    //Value: The session key (AES key)
     private Map<String, SecretKeySpec> sessionKeys;
+
+    //The current user public keys the client has
+    //Key: The users phone number/id
+    //Value: The users public key (RSA default)
     private Map<String, PublicKey> publicKeys;
+
+    //The RSA public key of the server
     private PublicKey serverPublicKey;
 
     private KeyManager()
@@ -52,16 +64,9 @@ public class KeyManager
         publicKeys  =   new HashMap<>();
     }
 
-    public KeyPair getClientKeyPair()
-    {
-        return clientKeyPair;
-    }
-
-    public void setClientKeyPair(KeyPair clientKeyPair)
-    {
-        this.clientKeyPair  =   clientKeyPair;
-    }
-
+    //Creates and returns a public-private key pair for the client
+    //Generates a 1024bit RSA key
+    //Returns null on exception
     public KeyPair generateClientKeyPair()
     {
         try
@@ -73,11 +78,13 @@ public class KeyManager
 
         catch(NoSuchAlgorithmException e)
         {
-            Log.e("KeyManager", e.getMessage());
+            Log.e("[KEY_GENERATE_FAIL] ", e.getMessage());
             return null;
         }
     }
 
+    //Generates 128 bit (16 byte) random bytes
+    //which can be used as a session or AES key
     public byte[] generateSessionKey()
     {
         SecureRandom rGen   =   new SecureRandom();
@@ -87,6 +94,9 @@ public class KeyManager
         return sessionKey;
     }
 
+    //Encrypts the passed session key with the passed receivers public key
+    //Encryption is done using RSA
+    //Returns null if there is no public key found for the passed user
     public byte[] wrapSessionKey(String receiver, byte[] sessionKey)
     throws NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException,
     BadPaddingException, NoSuchAlgorithmException, InvalidKeyException
@@ -97,37 +107,21 @@ public class KeyManager
 
         else
         {
-            byte[] sessionInitiator =   generateSessionInitiator();
-            byte[] encryptedInitiator   =   CryptoCommons.publicEncrypt(sessionInitiator, publicKey);
-            String encodedInitiator     =   Base64.encodeToString(encryptedInitiator, Base64.NO_WRAP);
-            Log.d("EXPERIMENT", "LENGTH: " + encodedInitiator.length());
-            Log.d("WRAP_SESSION", Base64.encodeToString(publicKey.getEncoded(), Base64.NO_WRAP));
-
-            byte[] encryptedKey =   CryptoCommons.publicEncrypt(sessionKey, publicKey);
+            byte[] encryptedKey         =   CryptoCommons.publicEncrypt(sessionKey, publicKey);
             return encryptedKey;
         }
     }
 
-    public byte[] generateSessionInitiator()
-    {
-        SecureRandom rGen   =   new SecureRandom();
-        byte[] sessionInitiator   =   new byte[6];
-        rGen.nextBytes(sessionInitiator);
-
-        return sessionInitiator;
-    }
-
-    public void generateSessionKeyFromInitiator(byte[] initiator)
-    {
-
-    }
-
+    //Clears the session and public keys
     public void resetKeys()
     {
-        sessionKeys.clear();;
+        sessionKeys.clear();
         publicKeys.clear();
     }
 
+    //Loads the clients private-public key pair from storage
+    //If keys are found in storage, the clientKeyPair is initialized
+    //See ClientConfig.STORED_PUKEY_NAME and ClientConfig.STORED_PRKEY_NAME
     public void loadClientKeyPair(Activity initActivity)
     {
         SharedPreferences sharedPreferences =   PreferenceManager.getDefaultSharedPreferences(initActivity);
@@ -142,8 +136,11 @@ public class KeyManager
 
         try
         {
+            //Keys are base 64 encoded on storing, decode them
             byte[] publicKeyBytes   =   Base64.decode(storedPublicKey, Base64.DEFAULT);
             byte[] privateKeyBytes  =   Base64.decode(storedPrivateKey, Base64.DEFAULT);
+
+            //Generate public, private keys from the stored bytes and initialize the client key pair
             PublicKey pubKey        =   (PublicKey) CryptoUtils.stringToAsymKey(publicKeyBytes, true);
             PrivateKey privKey      =   (PrivateKey) CryptoUtils.stringToAsymKey(privateKeyBytes, false);
             clientKeyPair           =   new KeyPair(pubKey, privKey);
@@ -156,6 +153,9 @@ public class KeyManager
         }
     }
 
+    //Stores the clients key pair in storage
+    //Keys can be loaded again with KeyManager@loadClientKeyPair
+    //See ClientConfig.STORED_PUKEY_NAME and ClientConfig.STORED_PRKEY_NAME
     public void saveClientKeyPair(Activity initActivity)
     {
         if(clientKeyPair == null) return;
@@ -168,6 +168,43 @@ public class KeyManager
         prefEditor.putString(ClientConfig.STORED_PRKEY_NAME, privateKeyStr);
         prefEditor.putString(ClientConfig.STORED_PUKEY_NAME, publicKeyStr);
         prefEditor.commit();
+    }
+
+    //Sets the servers public key from a public key string
+    //The string is base64 decoded and transformed into a RSA public key
+    public void setServerPublicKey(String publicKeyStr)
+    throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeySpecException
+    {
+        byte[] keyBytes =   Base64.decode(publicKeyStr.getBytes("UTF-8"), Base64.DEFAULT);
+        serverPublicKey =   (PublicKey) CryptoUtils.stringToAsymKey(keyBytes, true);
+    }
+
+    //Sets the passed users public key from the passed key bytes
+    //Key bytes are transformed into a RSA public key
+    //See CryptoUtils.stringToAsymKey
+    public void setUserPublicKey(String userID, byte[] keyData)
+    throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeySpecException
+    {
+        PublicKey publicKey     =   (PublicKey) CryptoUtils.stringToAsymKey(keyData, true);
+        publicKeys.put(userID, publicKey);
+    }
+
+    //Sets the passed users session key from the passed key bytes
+    //Key bytes are transformed into an AES key
+    public void setUserSessionKey(String userID, byte[] keyData)
+    {
+        SecretKeySpec keySpec   =   new SecretKeySpec(keyData, "AES");
+        sessionKeys.put(userID, keySpec);
+    }
+
+    public KeyPair getClientKeyPair()
+    {
+        return clientKeyPair;
+    }
+
+    public void setClientKeyPair(KeyPair clientKeyPair)
+    {
+        this.clientKeyPair  =   clientKeyPair;
     }
 
     public PrivateKey getClientPrivateKey()
@@ -192,26 +229,6 @@ public class KeyManager
         this.serverPublicKey    =   serverPublicKey;
     }
 
-    public void setServerPublicKey(String publicKeyStr)
-    throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeySpecException
-    {
-        byte[] keyBytes =   Base64.decode(publicKeyStr.getBytes("UTF-8"), Base64.DEFAULT);
-        serverPublicKey =   (PublicKey) CryptoUtils.stringToAsymKey(keyBytes, true);
-        Log.d("SERVER_PUBLIC_KEY", Base64.encodeToString(serverPublicKey.getEncoded(), Base64.NO_WRAP));
-    }
-
-    public void setUserPublicKey(String userID, byte[] keyData)
-    throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeySpecException
-    {
-        PublicKey publicKey     =   (PublicKey) CryptoUtils.stringToAsymKey(keyData, true);
-        publicKeys.put(userID, publicKey);
-    }
-
-    public void setUserSessionKey(String userID, byte[] keyData)
-    {
-        SecretKeySpec keySpec   =   new SecretKeySpec(keyData, "AES");
-        sessionKeys.put(userID, keySpec);
-    }
 
     public Map<String, SecretKeySpec> getSessionKeys()
     {

@@ -22,9 +22,17 @@ import org.json.JSONObject;
 
 public class ServiceResponse
 {
+    //An indicator to whether the service/action was successful
     private boolean status;
+
+    //A message/description of the response i.e error message
     private String message;
+
+    //Some extra data to pass back
     private JsonObject data;
+
+    //An indicator to whether this was a information response not success/fail
+    //Mostly used for ServiceResponse@showToastResponse
     private boolean info;
 
     public ServiceResponse()
@@ -75,6 +83,7 @@ public class ServiceResponse
         this.data   =   data;
     }
 
+    //Displays a custom toast message based on the response fields
     public void showToastResponse(Activity activity)
     {
         LayoutInflater inflater =   activity.getLayoutInflater();
@@ -84,6 +93,7 @@ public class ServiceResponse
 
         ImageView imageView     =   (ImageView) layout.findViewById(R.id.stoast_icon);
 
+        //Set the toast drawable based on if it is an info message or success/fail status
         if(info)
             imageView.setImageResource(R.drawable.info);
         else

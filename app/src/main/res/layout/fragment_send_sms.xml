@@ -4,65 +4,66 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFF">
-<RelativeLayout
-    android:id="@+id/activity_auth_create"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="20dp"
-    android:paddingLeft="20dp"
-    android:paddingRight="20dp"
-    android:paddingTop="20dp"
-    android:focusableInTouchMode="true"
-    tools:context="com.kyleruss.hssa2.client.com.kyleruss.hssa2.client.fragment.SendSMSFragment">
 
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Send SMS"
-        android:id="@+id/smsTitle"
-        android:layout_marginTop="20dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:drawableLeft="@drawable/chat_bubbles"
-        android:drawablePadding="10dp"/>
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/send_sms_image"
-        android:layout_marginTop="12dp"
-        android:id="@+id/sendSmsBtn"
-        android:layout_below="@+id/msgContentField"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
-    <EditText
+    <RelativeLayout
+        android:id="@+id/activity_auth_create"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="phone"
-        android:ems="10"
-        android:id="@+id/phoneIDField"
-        android:layout_marginTop="40dp"
-        android:layout_below="@+id/smsTitle"
-        android:drawableLeft="@drawable/phone_image"
-        android:drawablePadding="15dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_height="match_parent"
+        android:paddingBottom="20dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="20dp"
+        android:focusableInTouchMode="true"
+        tools:context="com.kyleruss.hssa2.client.com.kyleruss.hssa2.client.fragment.SendSMSFragment">
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:inputType="textMultiLine"
-        android:ems="10"
-        android:padding="10dp"
-        android:id="@+id/msgContentField"
-        android:background="@drawable/border"
-        android:layout_marginTop="64dp"
-        android:layout_below="@id/phoneIDField"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-</RelativeLayout>
-    </ScrollView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Send SMS"
+            android:id="@+id/smsTitle"
+            android:layout_marginTop="20dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:drawableLeft="@drawable/chat_bubbles"
+            android:drawablePadding="10dp"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/send_sms_image"
+            android:layout_marginTop="12dp"
+            android:id="@+id/sendSmsBtn"
+            android:layout_below="@+id/msgContentField"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="phone"
+            android:ems="10"
+            android:id="@+id/phoneIDField"
+            android:layout_marginTop="40dp"
+            android:layout_below="@+id/smsTitle"
+            android:drawableLeft="@drawable/phone_image"
+            android:drawablePadding="15dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:inputType="textMultiLine"
+            android:ems="10"
+            android:padding="10dp"
+            android:id="@+id/msgContentField"
+            android:background="@drawable/border"
+            android:layout_marginTop="64dp"
+            android:layout_below="@id/phoneIDField"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+    </RelativeLayout>
+</ScrollView>

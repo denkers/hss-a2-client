@@ -47,10 +47,7 @@ public class UsersFragment extends Fragment implements AdapterView.OnItemClickLi
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        //getActivity().getActionBar().setTitle("Users");
-        view   =   inflater.inflate(R.layout.fragment_users, container, false);
-
-
+        view                =   inflater.inflate(R.layout.fragment_users, container, false);
         view.findViewById(R.id.usersRefresh).setOnClickListener(this);
         List userList       =   new ArrayList<>(UserManager.getInstance().getUserList());
         usersAdapter        =   new UserListAdapter(userList, getActivity());
@@ -62,6 +59,8 @@ public class UsersFragment extends Fragment implements AdapterView.OnItemClickLi
         return view;
     }
 
+    //Displays the send SMS fragment where the user
+    //is passed who's phone number will be filled out
     private void showSendSMSFragmentForUser(User user)
     {
         Fragment smsFragment    =   new SendSMSFragment();
@@ -76,6 +75,7 @@ public class UsersFragment extends Fragment implements AdapterView.OnItemClickLi
         .commit();
     }
 
+    //Transfer user to send SMS fragment when user is selected
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
@@ -88,13 +88,19 @@ public class UsersFragment extends Fragment implements AdapterView.OnItemClickLi
         usersAdapter.setList(UserManager.getInstance().getUserList());
     }
 
+
+    //Sends a request to get the online user list
+    //Response will need to be verified
     public void fetchUserList()
     {
         try
         {
             Map.Entry<String, String> authRequest = RequestManager.getInstance().generateRequest();
             JsonObject requestObj           =   CommUtils.prepareAuthenticatedRequest(authRequest.getKey(), authRequest.getValue());
+            //Phone ID is passed for server to encrypt the response key
             requestObj.addProperty("userID", UserManager.getInstance().getActiveUser().getPhoneID());
+
+            //Encrypt key with RSA using servers public key, encrypt message with AES
             EncryptedSession encSession     =   new EncryptedSession(requestObj.toString().getBytes("UTF-8"), KeyManager.getInstance().getServerPublicKey());
             ServiceRequest request          =   CommUtils.prepareEncryptedSessionRequest(encSession);
             request.setURL(ClientConfig.CONN_URL + RequestPaths.USER_LIST_REQ);
@@ -106,12 +112,12 @@ public class UsersFragment extends Fragment implements AdapterView.OnItemClickLi
 
         catch(Exception e)
         {
-            e.printStackTrace();
             new ServiceResponse("Failed to fetch user list", false).showToastResponse(getActivity());
-            //Log.d("FETCH_USERS_FAIL", e.getMessage());
+            Log.d("FETCH_USERS_FAIL", e.getMessage());
         }
     }
 
+    //Allow user to refresh the online user list
     @Override
     public void onClick(View v)
     {
@@ -120,6 +126,8 @@ public class UsersFragment extends Fragment implements AdapterView.OnItemClickLi
 
     }
 
+    //Response handler for the fetch online user list request
+    //Response is verified and the users are added to the clients online user list
     private class UserListTask extends HTTPAsync
     {
         protected void onPreExecute()
@@ -134,11 +142,13 @@ public class UsersFragment extends Fragment implements AdapterView.OnItemClickLi
             {
                 hideServicingSpinner();
 
+                //Decrypt message with AES where key is decrypted with RSA using the clients private key
                 EncryptedSession encSession =   CommUtils.decryptSessionResponse(response, KeyManager.getInstance().getClientPrivateKey());
                 JsonObject responseObj      =   CommUtils.parseJsonInput(new String(encSession.getData()));
                 String requestID            =   responseObj.get("requestID").getAsString();
                 String nonce                =   responseObj.get("nonce").getAsString();
 
+                //Verify response
                 if(RequestManager.getInstance().verifyAndDestroy(requestID, nonce))
                 {
                     JsonObject userListObj  =   responseObj.get("userList").getAsJsonObject();
@@ -147,6 +157,7 @@ public class UsersFragment extends Fragment implements AdapterView.OnItemClickLi
                     UserManager userManager =   UserManager.getInstance();
                     userManager.clearUsers();
 
+                    //Add users to the clients online user list
                     for(int i = 0; i < userCount; i++)
                     {
                         JsonObject userObj  =   userList.get(i).getAsJsonObject();
@@ -159,12 +170,11 @@ public class UsersFragment extends Fragment implements AdapterView.OnItemClickLi
                         userManager.addUser(user.getPhoneID(), user);
                     }
 
+                    //Update the list view
                     refreshUserList();
-                    Log.d("FETCH_USERS_RESPONSE", userListObj.toString());
                 }
 
                 else  new ServiceResponse("Failed to authenticate response", false).showToastResponse(getActivity());
-                //Toast.makeText(getActivity().getApplicationContext(), "Failed to authenticate response", Toast.LENGTH_SHORT).show();
             }
 
             catch(Exception e)

@@ -22,12 +22,36 @@ import java.util.Set;
 public class UserManager
 {
     private static UserManager instance;
+
+    //The users that are currently active/online
+    //Key: the users phone number, value: the corresponding user object
     private Map<String, User> onlineUsers;
+
+    //The user object for the current client
     private User activeUser;
 
     private UserManager()
     {
         onlineUsers =   new LinkedHashMap<>();
+    }
+
+    //Stores the passed phone number in the phones storage
+    //Storage key: phoneID
+    public void savePhoneID(String phoneID, Activity activity)
+    {
+        SharedPreferences sharedPreferences =   PreferenceManager.getDefaultSharedPreferences(activity);
+        SharedPreferences.Editor prefEditor =   sharedPreferences.edit();
+        prefEditor.putString("phoneID", phoneID);
+
+        prefEditor.commit();
+    }
+
+    //Retrieves the clients phone number from storage
+    //Using the storage key: phoneID
+    public String getPhoneID(Activity activity)
+    {
+        SharedPreferences sharedPreferences =   PreferenceManager.getDefaultSharedPreferences(activity);
+        return sharedPreferences.getString("phoneID", null);
     }
 
     public User getActiveUser()
@@ -88,21 +112,6 @@ public class UserManager
     public void resetOnlineUsers()
     {
         onlineUsers.clear();
-    }
-
-    public void savePhoneID(String phoneID, Activity activity)
-    {
-        SharedPreferences sharedPreferences =   PreferenceManager.getDefaultSharedPreferences(activity);
-        SharedPreferences.Editor prefEditor =   sharedPreferences.edit();
-        prefEditor.putString("phoneID", phoneID);
-
-        prefEditor.commit();
-    }
-
-    public String getPhoneID(Activity activity)
-    {
-        SharedPreferences sharedPreferences =   PreferenceManager.getDefaultSharedPreferences(activity);
-        return sharedPreferences.getString("phoneID", null);
     }
 
     public static UserManager getInstance()

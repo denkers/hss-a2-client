@@ -18,10 +18,19 @@ import javax.crypto.Cipher;
 
 public class Message implements Serializable
 {
+    //The senders phone number
     private String from;
+
+    //The message body
     private String content;
+
+    //True if the message has been opened/read by the client; otherwise false
     private boolean read;
+
+    //The date/time the message was received by the client
     private Date timeRecv;
+
+    //True if the message has already been decrypted; false otherwise
     private boolean decrypted;
 
     public Message(String from, String content)
@@ -31,23 +40,6 @@ public class Message implements Serializable
         this.read       =   false;
         this.timeRecv   =   new Date();
         this.decrypted  =   false;
-    }
-
-    public boolean decryptMessage(Cipher cipher, boolean decode)
-    {
-        try
-        {
-            byte[] contentData      =   decode ? Base64.decode(content, Base64.DEFAULT) : content.getBytes("UTF-8");
-            byte[] decryptedData    =   cipher.doFinal(contentData);
-            content                 =   new String(decryptedData);
-            return true;
-        }
-
-        catch(Exception e)
-        {
-            Log.d("MESSAGE_DEC_FAIL", e.getMessage());
-            return false;
-        }
     }
 
     public boolean isDecrypted()

@@ -18,7 +18,5 @@ android:layout_height="match_parent" >
         android:drawablePadding="10dp"
         android:paddingTop="10dp"
         android:paddingLeft="15dp"/>
-
-
 </TableRow>
 </TableLayout>

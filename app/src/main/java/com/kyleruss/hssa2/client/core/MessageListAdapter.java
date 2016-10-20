@@ -32,12 +32,13 @@ public class MessageListAdapter extends ArrayAdapter<Message>
         this.context        =   context;
     }
 
-    public void setList(Collection<Message> userList)
+    //Clears and updates the messages list with the passed  message list
+    public void setList(Collection<Message> messageList)
     {
         super.clear();
-        super.addAll(userList);
+        super.addAll(messageList);
         super.notifyDataSetChanged();
-        messages    =   (List<Message>) userList;
+        messages    =   (List<Message>) messageList;
     }
 
     public List<Message> getMessageList()
@@ -50,6 +51,8 @@ public class MessageListAdapter extends ArrayAdapter<Message>
         return messages.get(pos);
     }
 
+    //Returns a view that displays the message sender and received date
+    //Also shows a drawable which is changed depenending on if the message has been read or not
     public View getView(int position, View view, ViewGroup parent)
     {
         LayoutInflater inflater     =   context.getLayoutInflater();

@@ -34,6 +34,7 @@ public abstract class HTTPAsync extends AsyncTask<ServiceRequest, Void, String>
 {
     private Dialog processDialog;
 
+    //Reads and returns a response from the connection
     private String getResponse(HttpURLConnection conn) throws IOException
     {
         String response =   "";
@@ -41,7 +42,7 @@ public abstract class HTTPAsync extends AsyncTask<ServiceRequest, Void, String>
         {
             InputStream inputStream = conn.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-            String line = null;
+            String line;
 
             while ((line = reader.readLine()) != null)
                 response += line + "\n";
@@ -50,9 +51,11 @@ public abstract class HTTPAsync extends AsyncTask<ServiceRequest, Void, String>
             return response;
         }
 
-        else return "fail: " + conn.getResponseCode();
+        else return null;
     }
 
+    //Writes to the connection with the passed params
+    //Params should be URL encoded and in correct format
     private void writeRequest(HttpURLConnection conn, String params) throws IOException
     {
         OutputStreamWriter writer   =   new OutputStreamWriter(conn.getOutputStream(), "UTF-8");
@@ -61,27 +64,10 @@ public abstract class HTTPAsync extends AsyncTask<ServiceRequest, Void, String>
         writer.close();
     }
 
-    protected ServiceResponse getServiceResponse(String response)
-    {
-        JsonObject jsonObject   =   CommUtils.parseJsonInput(response);
-        boolean status          =   jsonObject.get("status").getAsBoolean();
-        String message          =   jsonObject.get("message").getAsString();
-        ServiceResponse serviceResponse         =   new ServiceResponse(message, status);
-        return serviceResponse;
-    }
-
-    public void showServicingSpinner(Context context)
-    {
-        showServicingSpinner(context, "Please wait");
-    }
-
+    //Displays a dialog with a spinner and message to indicate processing
+    //Should be used on HTTPAsync@preExecute and hidden on HTTPAsync@postExecute
     public void showServicingSpinner(Context context, String message)
     {
-        /*v.setImageResource(android.R.color.transparent);
-        v.setBackgroundResource(R.drawable.spinner_animation);
-        AnimationDrawable animation =   (AnimationDrawable) v.getBackground();
-        animation.start(); */
-
         processDialog   =   new Dialog(context);
         processDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         processDialog.setContentView(R.layout.process_dialog);
@@ -92,6 +78,8 @@ public abstract class HTTPAsync extends AsyncTask<ServiceRequest, Void, String>
         processDialog.show();
     }
 
+    //Hides the processing/spinner dialog
+    //Should be called on HTTPAsnyc@postExecute if used on HTTPAsync@preExecute
     public void hideServicingSpinner()
     {
         if(processDialog == null) return;
@@ -99,10 +87,10 @@ public abstract class HTTPAsync extends AsyncTask<ServiceRequest, Void, String>
         AnimationDrawable animation =   (AnimationDrawable) (processDialog.findViewById(R.id.processSpinner).getBackground());
         animation.stop();
         processDialog.dismiss();
-        //v.setBackgroundResource(android.R.color.transparent);
-        //v.setImageResource(prevDrawable);
     }
 
+    //Writes a GET/POST request and returns it's response
+    //See HTTPAsync@getResponse(String)
     @Override
     protected String doInBackground(ServiceRequest... requests)
     {

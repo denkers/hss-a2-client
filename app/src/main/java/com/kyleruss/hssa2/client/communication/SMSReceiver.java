@@ -23,8 +23,8 @@ import java.util.Map;
 
 public class SMSReceiver extends BroadcastReceiver
 {
-    private final SmsManager smsManager         =   SmsManager.getDefault();
-
+    //Reads the recieved message and obtains it's sender and message body
+    //Forwards the message onto the message manager to handle it
     @Override
     public void onReceive(Context context, Intent intent)
     {
@@ -38,16 +38,17 @@ public class SMSReceiver extends BroadcastReceiver
                 String messageContent   =   "";
                 String sender           =   "";
 
-
-                for(int i = 0; i < pdus.length; i++)
+                //Read in the message
+                for(Object pdu : pdus)
                 {
-                    SmsMessage message = SmsMessage.createFromPdu((byte[]) pdus[i]);
+                    SmsMessage message = SmsMessage.createFromPdu((byte[]) pdu);
 
                     sender          =   message.getDisplayOriginatingAddress();
                     String msgBody  =   message.getMessageBody();
-                    messageContent  += msgBody;
+                    messageContent  +=  msgBody;
                 }
 
+                //Pass message to mesage handler to handle the message
                 Toast.makeText(context, "New message from: " + sender, Toast.LENGTH_SHORT).show();
                 MessageManager.getInstance().handleMessage(sender, messageContent);
             }

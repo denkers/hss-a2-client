@@ -10,9 +10,17 @@ import java.io.Serializable;
 
 public class User implements Serializable
 {
+    //The users display name
     private String name;
+
+    //Profile image bytes
+    //If null use the default profile image
     private byte[] profileImage;
+
+    //The users phone number
     private String phoneID;
+
+    //The users email address
     private String email;
 
     public User()
@@ -31,6 +39,8 @@ public class User implements Serializable
         this.phoneID        =   phoneID;
     }
 
+    //Returns the bytes of the profile image
+    //Check for null, if so should use default profile image
     public byte[] getProfileImage()
     {
         return profileImage;
@@ -71,12 +81,15 @@ public class User implements Serializable
         return email;
     }
 
+    //Checks if two users are the same by comparing
+    //their phone numbers
     @Override
     public boolean equals(Object obj)
     {
         return ((obj instanceof User) && (((User) obj).getPhoneID().equals(phoneID)));
     }
 
+    //Returns the phone numbers hash code
     @Override
     public int hashCode()
     {

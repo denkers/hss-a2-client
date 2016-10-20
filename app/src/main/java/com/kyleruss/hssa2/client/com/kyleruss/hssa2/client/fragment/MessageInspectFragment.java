@@ -39,7 +39,6 @@ public class MessageInspectFragment extends Fragment implements View.OnClickList
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        //getActivity().getActionBar().setTitle("Read message");
         View view = inflater.inflate(R.layout.fragment_message_inspect, container, false);
         ImageView decryptBtn    =   ((ImageView) view.findViewById(R.id.decryptBtn));
         ImageView replyBtn      =   ((ImageView) view.findViewById(R.id.replyBtn));
@@ -47,6 +46,7 @@ public class MessageInspectFragment extends Fragment implements View.OnClickList
         decryptBtn.setOnClickListener(this);
         replyBtn.setOnClickListener(this);
 
+        //Set the view info for the passed message
         Bundle data =   getArguments();
         if(data != null)
         {
@@ -62,6 +62,7 @@ public class MessageInspectFragment extends Fragment implements View.OnClickList
         return view;
     }
 
+    //Redirects to send sms with the current phone number
     public void replyMessage()
     {
         Fragment smsFragment    =   new SendSMSFragment();
@@ -76,11 +77,16 @@ public class MessageInspectFragment extends Fragment implements View.OnClickList
                 .commit();
     }
 
+    //Decrypts the inspected message
+    //Denies the user from decrypting if it's already been decrypted
     public void decryptMessage()
     {
+        //Message already been decrypted
         if(currentMessage.isDecrypted())
             new ServiceResponse("Message is already decrypted", true).setInfo(true).showToastResponse(getActivity());
 
+        //Not decrypted, decrypt the inspected message
+        //See MessageManager@decryptMessage for decryption
         else
         {
             MessageManager messageManager   =   MessageManager.getInstance();

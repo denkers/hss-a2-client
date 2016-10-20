@@ -33,28 +33,26 @@ import com.kyleruss.hssa2.client.core.UserManager;
 import com.kyleruss.hssa2.commons.EncryptedSession;
 import com.kyleruss.hssa2.commons.RequestPaths;
 
+//-----------------------------------------
+//  HomeActivity
+//-----------------------------------------
+//Layout: R.layout.activity_home
+//About: Central app hub/navigation
+
 public class HomeActivity extends Activity implements NavigationDrawerFragment.NavigationDrawerCallbacks
 {
 
-    /**
-     * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
-     */
     private NavigationDrawerFragment mNavigationDrawerFragment;
-    private CharSequence mTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        getActionBar().setTitle("");
-
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
-        mTitle = getTitle();
 
-        // Set up the drawer.
         mNavigationDrawerFragment.setUp
         (
             R.id.navigation_drawer,
@@ -62,12 +60,16 @@ public class HomeActivity extends Activity implements NavigationDrawerFragment.N
         );
     }
 
+    //Redirects the user to connect view
     private void showLogout()
     {
         Intent intent   =   new Intent(this, ConnectActivity.class);
         startActivity(intent);
     }
 
+    //Sends a request to disconnect from the server
+    //Server will remove user from online users etc.
+    //On success redirect user to connect view
     private void logoutUser()
     {
         JsonObject requestObj   =   new JsonObject();
@@ -116,6 +118,9 @@ public class HomeActivity extends Activity implements NavigationDrawerFragment.N
                 .commit();
     }
 
+    //Response handler for logging out request
+    //If disconnect was successful, clean up users, key instances etc.
+    //Redirect user back to connect view
     private class LogoutTask extends HTTPAsync
     {
         @Override
@@ -123,12 +128,12 @@ public class HomeActivity extends Activity implements NavigationDrawerFragment.N
         {
             JsonObject responseObj  =   CommUtils.parseJsonInput(response);
 
-            Log.d("DISC_RESPONSE", responseObj.toString());
             if(responseObj.get("actionStatus").getAsBoolean())
             {
                 UserManager.getInstance().setActiveUser(null);
                 UserManager.getInstance().clearUsers();
                 KeyManager.getInstance().resetKeys();
+
                 new ServiceResponse("Successfully logged out", true).showToastResponse(HomeActivity.this);
                 showLogout();
             }
