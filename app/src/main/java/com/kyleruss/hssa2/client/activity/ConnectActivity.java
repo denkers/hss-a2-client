@@ -23,6 +23,7 @@ import com.kyleruss.hssa2.client.communication.ServiceRequest;
 import com.kyleruss.hssa2.client.core.ClientConfig;
 import com.kyleruss.hssa2.client.core.KeyManager;
 import com.kyleruss.hssa2.client.core.RequestManager;
+import com.kyleruss.hssa2.client.core.User;
 import com.kyleruss.hssa2.client.core.UserManager;
 import com.kyleruss.hssa2.commons.CryptoUtils;
 import com.kyleruss.hssa2.commons.EncryptedSession;
@@ -30,6 +31,7 @@ import com.kyleruss.hssa2.commons.RequestPaths;
 
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.security.KeyPair;
 import java.security.PublicKey;
 import java.util.Map;
 
@@ -45,7 +47,6 @@ public class ConnectActivity extends Activity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connect);
-        KeyManager.getInstance().setClientKeyPair(KeyManager.getInstance().generateClientKeyPair());
         getServerPublicKey();
     }
 
@@ -98,7 +99,52 @@ public class ConnectActivity extends Activity
         @Override
         protected void onPostExecute(String response)
         {
-            Log.d("CONNECT_RESPONSE", response);
+            try
+            {
+                JsonObject responseObj = CommUtils.parseJsonInput(response);
+                byte[] key = Base64.decode(responseObj.get("key").getAsString(), Base64.DEFAULT); // could be
+                byte[] data = Base64.decode(responseObj.get("data").getAsString(), Base64.DEFAULT);
+                KeyPair clientKeyPair = KeyManager.getInstance().getClientKeyPair();
+                Log.d("CONNECT_RESPONSE", responseObj.toString());
+
+                if (clientKeyPair != null)
+                {
+                    EncryptedSession encSession = new EncryptedSession(key, data, clientKeyPair.getPrivate());
+                    encSession.unlock();
+                    JsonObject decryptedResponse = CommUtils.parseJsonInput(new String(encSession.getData()));
+                    Log.d("Decrypted response", decryptedResponse.toString());
+
+                    if(decryptedResponse.get("status").getAsBoolean())
+                    {
+                        String requestID    =   decryptedResponse.get("requestID").getAsString();
+                        String nonce        =   decryptedResponse.get("nonce").getAsString();
+                        if(RequestManager.getInstance().verifyAndDestroy(requestID, nonce))
+                        {
+                            User nextUser       =   new User(decryptedResponse.get("phoneID").getAsString(), decryptedResponse.get("name").getAsString());
+                            nextUser.setEmail(decryptedResponse.get("email").getAsString());
+                            byte[] profileImage =   decryptedResponse.has("profileImage")? Base64.decode(decryptedResponse.get("profileImage").getAsString(), Base64.DEFAULT) : null;
+                            nextUser.setProfileImage(profileImage);
+                            UserManager.getInstance().setActiveUser(nextUser);
+
+                            Toast.makeText(ConnectActivity.this, "Successfully connected", Toast.LENGTH_SHORT).show();
+                            startHomeActivity();
+                        }
+
+                        else Toast.makeText(ConnectActivity.this, "Failed to authenticate response", Toast.LENGTH_SHORT).show();
+                    }
+
+                    else Toast.makeText(ConnectActivity.this, decryptedResponse.get("statusMessage").getAsString(), Toast.LENGTH_SHORT).show();
+                }
+
+                else throw new Exception();
+            }
+
+            catch(Exception e)
+            {
+                e.printStackTrace();
+                Log.d("CONNECT_FAIL", e.getMessage());
+                Toast.makeText(ConnectActivity.this, "Failed to connect", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -112,6 +158,8 @@ public class ConnectActivity extends Activity
                 JsonObject responseObj  =    parseJsonInput(response);
                 String keyStr           =   responseObj.get("serverPublicKey").getAsString();
                 KeyManager.getInstance().setServerPublicKey(keyStr);
+                KeyManager.getInstance().loadClientKeyPair(ConnectActivity.this);
+                String pubKey = Base64.encodeToString(KeyManager.getInstance().getClientKeyPair().getPublic().getEncoded(), Base64.NO_WRAP);
                 //startAuthCreateActivity();
              //   startHomeActivity();
             }
