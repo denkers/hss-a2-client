@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFF"
-    tools:context="com.kyleruss.hssa2.client.fragment.UsersFragment">
+    tools:context="com.kyleruss.hssa2.client.com.kyleruss.safesms.client.com.kyleruss.hssa2.client.fragment.UsersFragment">
 
     <TextView
         android:layout_width="wrap_content"

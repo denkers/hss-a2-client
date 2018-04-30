@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.kyleruss.hssa2.client">
+    package="com.kyleruss.safesms.client">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -18,7 +18,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activity.ConnectActivity"
+            android:name="com.kyleruss.safesms.client.activity.ConnectActivity"
             android:theme="@android:style/Theme.Holo.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,13 +26,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.AuthCreateActivity"
+            android:name="com.kyleruss.safesms.client.activity.AuthCreateActivity"
             android:theme="@android:style/Theme.Holo.Light.NoActionBar" />
-        <activity android:name=".activity.HomeActivity" />
-        <activity android:name=".activity.RegistrationCompleteActivity"
+        <activity android:name="com.kyleruss.safesms.client.activity.HomeActivity" />
+        <activity android:name="com.kyleruss.safesms.client.activity.RegistrationCompleteActivity"
             android:theme="@android:style/Theme.Holo.Light.NoActionBar" />
 
-        <receiver android:name=".communication.SMSReceiver"
+        <receiver android:name="com.kyleruss.safesms.client.communication.SMSReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter android:priority="999">

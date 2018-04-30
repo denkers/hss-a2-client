@@ -6,4 +6,4 @@
     android:choiceMode="singleChoice"
     android:divider="#FFF"
     android:dividerHeight="1dp"
-    tools:context="com.kyleruss.hssa2.client.fragment.NavigationDrawerFragment" />
+    tools:context="com.kyleruss.hssa2.client.com.kyleruss.safesms.client.com.kyleruss.hssa2.client.fragment.NavigationDrawerFragment" />

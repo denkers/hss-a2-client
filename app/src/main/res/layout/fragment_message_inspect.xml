@@ -8,7 +8,7 @@
     android:paddingLeft="20dp"
     android:paddingRight="20dp"
     android:paddingTop="20dp"
-    tools:context="com.kyleruss.hssa2.client.fragment.MessageInspectFragment">
+    tools:context="com.kyleruss.hssa2.client.com.kyleruss.safesms.client.com.kyleruss.hssa2.client.fragment.MessageInspectFragment">
 
 
     <TextView

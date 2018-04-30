@@ -14,7 +14,7 @@
         android:paddingRight="20dp"
         android:paddingTop="20dp"
         android:focusableInTouchMode="true"
-        tools:context="com.kyleruss.hssa2.client.com.kyleruss.hssa2.client.fragment.SendSMSFragment">
+        tools:context="com.kyleruss.hssa2.client.com.kyleruss.safesms.client.com.kyleruss.hssa2.client.fragment.SendSMSFragment">
 
 
         <TextView

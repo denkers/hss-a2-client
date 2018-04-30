@@ -7,7 +7,7 @@
     android:paddingRight="30dp"
     android:paddingTop="30dp"
     android:background="#FFF"
-    tools:context="com.kyleruss.hssa2.client.fragment.SettingsFragment">
+    tools:context="com.kyleruss.hssa2.client.com.kyleruss.safesms.client.com.kyleruss.hssa2.client.fragment.SettingsFragment">
 
 
     <TextView
